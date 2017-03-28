@@ -45,8 +45,8 @@ reports and pull requests.
    :alt: Documentation
    :scale: 100%
    
-.. |cov| image:: https://codecov.io/gh/Becksteinlab/numkit/branch/develop/graph/badge.svg
-   :target: https://codecov.io/gh/Becksteinlab/numkit?branch=develop
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/numkit/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/numkit?branch=master
    :alt: Code Coverage
    :scale: 100%
 
