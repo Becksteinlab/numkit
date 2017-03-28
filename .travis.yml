@@ -38,7 +38,7 @@ install:
 
 # run tests
 script:
-  - py.test --cov numkit numkit/tests
+  - py.test --cov numkit src/numkit/tests
 
 after_success:
   - codecov
