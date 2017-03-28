@@ -2,7 +2,7 @@
 numkit
 ======
 
-.. |docs| |build| |cov|
+|docs| |build| |cov|
 
 **numkit** is a small collection of numerical helper functions and
 classes ("numerical first aid kit") that have been useful for
@@ -33,3 +33,20 @@ Contributing
 
 Contributions are very welcome in all forms, especially through issue
 reports and pull requests.
+
+
+.. |build| image:: https://travis-ci.org/Becksteinlab/numkit.svg?branch=master
+   :target: https://travis-ci.org/Becksteinlab/numkit
+   :alt: Build status
+   :scale: 100%
+   
+.. |docs| image:: https://readthedocs.org/projects/numkit/badge/?version=latest
+   :target: http://numkit.readthedocs.org/en/latest/?badge=latest
+   :alt: Documentation
+   :scale: 100%
+   
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/numkit/branch/develop/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/numkit?branch=develop
+   :alt: Code Coverage
+   :scale: 100%
+
