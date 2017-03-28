@@ -1,0 +1,67 @@
+===================================================================
+:mod:`numkit.observables` --- Observables as quantities with errors
+===================================================================
+
+Example showing how to use :class:`~numkit.observables.QuantityWithError`:
+   >>> from numkit.observables import QuantityWithError
+   >>> a = QuantityWithError(2.0, 1.0)
+   >>> a2 = QuantityWithError(2.0, 1.0)  # 2nd independent measurement of a
+   >>> a3 = QuantityWithError(2.0, 1.0)  # 3rd independent measurement of a
+   >>> b = QuantityWithError(-1, 0.5)
+   >>> a+a
+   4 (2)
+   >>> a+a2
+   4 (1.41421)
+   >>> (a+a+a)/3
+   2 (1)
+   >>> (a+a2+a3)/3
+   2 (0.57735)
+   >>> a/b
+   -2 (1.41421)
+
+Note that each quantity has an identity: it makes a difference to the
+error of a combined quantity such as a+a if the inputs are independent
+measurements of the same.
+
+.. SeeAlso:: Various packages that describe quantities with units, in
+             particular quantities_.
+
+.. _quantities: http://packages.python.org/quantities/
+
+
+Classes
+=======
+
+.. autoclass:: numkit.observables.QuantityWithError
+   :members:
+.. attribute:: numkit.observables.QuantityWithError.value
+
+   Value of the observable :math:`A`, typically the mean of a number of
+   observations, :math:`\langle A \rangle`.
+
+.. attribute:: numkit.observables.QuantityWithError.error
+
+   Error of the observable, typically the square root of the
+   :attr:`~numkit.observables.QuantityWithError.variance` of the
+   observations, :math:`\sqrt{\langle (A - \langle A \rangle)^2
+   \rangle}`.
+
+   Changing the error automatically changes the
+   :attr:`~numkit.observables.QuantityWithError.variance`.
+
+.. attribute:: numkit.observables.QuantityWithError.variance
+
+   Variance :math:`\langle (A - \langle A \rangle)^2 \rangle` of the
+   observable. Changing the variance automatically changes the
+   :attr:`~numkit.observables.QuantityWithError.error`.
+
+.. autoclass:: numkit.observables.QID
+   :members: union
+
+
+Functions
+=========
+
+.. autofunction:: numkit.observables.iterable
+.. autofunction:: numkit.observables.asiterable
+

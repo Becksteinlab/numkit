@@ -1,0 +1,84 @@
+======================================
+:mod:`numkit.fitting` --- Fitting data
+======================================
+
+The module contains functions to do least square fits of functions of
+one variable f(x) to data points (x,y).
+
+Example
+=======
+
+For example, to fit a un-normalized Gaussian with :class:`FitGauss` to
+data distributed with mean 5.0 and standard deviation 3.0::
+
+   from numkit.fitting import FitGauss
+   import numpy, numpy.random
+
+   # generate suitably noisy data
+   mu, sigma = 5.0, 3.0
+   Y,edges = numpy.histogram(sigma*numpy.random.randn(10000), bins=100, density=True)
+   X = 0.5*(edges[1:]+edges[:-1]) + mu
+
+   g = FitGauss(X, Y)
+
+   print(g.parameters)
+   # [ 4.98084541  3.00044102  1.00069061]
+   print(numpy.array([mu, sigma, 1]) - g.parameters)
+   # [ 0.01915459 -0.00044102 -0.00069061]
+
+   import matplotlib.pyplot as plt
+   plt.plot(X, Y, 'ko', label="data")
+   plt.plot(X, g.fit(X), 'r-', label="fit")
+
+.. figure:: FitGauss.png
+   :scale: 60 %
+   :alt: Gaussian fit with data points
+
+   A Gaussian (red) was fit to the data points (black circles) with
+   the :class:`numkit.fitting.FitGauss` class.
+
+If the initial parameters for the least square optimization do not
+lead to a solution then one can provide customized starting values in
+the *parameters* keyword argument::
+
+   g = FitGauss(X, Y, parameters=[10, 1, 1])
+
+The *parameters* have different meaning for the different fit
+functions; the documentation for each function shows them in the
+context of the fit function.
+
+
+Creating new fit functions
+==========================
+
+New fit function classes can be derived from :class:`FitFunc`. The
+documentation and the methods :meth:`FitFunc.f_factory` and
+:meth:`FitFunc.initial_values` must be overriden. For example, the
+class :class:`FitGauss` is implemented as ::
+
+   class FitGauss(FitFunc):
+       '''y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))'''
+       def f_factory(self):
+           def fitfunc(p,x):
+               return p[2] * 1.0/(p[1]*numpy.sqrt(2*numpy.pi)) * numpy.exp(-(x-p[0])**2/(2*p[1]**2))
+           return fitfunc
+       def initial_values(self):
+           return [0.0,1.0,0.0]
+
+The function to be fitted is defined in :func:`fitfunc`. The
+parameters are accessed as ``p[0]``, ``p[1]``, ... For each parameter,
+a suitable initial value must be provided.
+
+
+Functions and classes
+=====================
+
+.. autofunction:: numkit.fitting.Pearson_r
+.. autofunction:: numkit.fitting.linfit
+
+.. autoclass:: numkit.fitting.FitFunc
+   :members:
+.. autoclass:: numkit.fitting.FitLin
+.. autoclass:: numkit.fitting.FitExp
+.. autoclass:: numkit.fitting.FitExp2
+.. autoclass:: numkit.fitting.FitGauss

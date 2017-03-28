@@ -1,0 +1,96 @@
+====================================================================
+ :mod:`numkit.timeseries` --- Time series manipulation and analysis
+====================================================================
+
+A time series contains of a sequence of time points (typically spaced
+equally) and a value for each time point. This module contains some
+standard scientific time series manipulations.
+
+.. SeeAlso:: pandas_
+
+.. _pandas: http://pandas.pydata.org
+
+
+
+Correlations
+============
+
+Autocorrelation time (time when ACF becomes 0 for the first time; uses
+:class:`gromacs.formats.XVG` to read the data and
+:func:`numkit.timeseries.autocorrelation_fft` to calculate the ACF)::
+
+   R = gromacs.formats.XVG("./md.xvg")
+   acf = autocorrelation_fft(R.array[1])
+   numpy.where(acf <= 0)[0][0]
+
+Alternatively, fit an exponential to the ACF and extract the time
+constant (see :func:`numkit.timeseries.tcorrel`).
+
+
+.. autofunction:: numkit.timeseries.tcorrel
+.. autofunction:: numkit.timeseries.autocorrelation_fft
+
+
+Coarse graining time series
+===========================
+
+The functions in this section are all based on
+:func:`regularized_function`. They reduce the number of datapoints in
+a time series to *maxpoints* by histogramming the data into
+*maxpoints* bins and then applying a function to reduce the data in
+each bin. A number of commonly used functions are predefined but it is
+straightforward to either use :func:`apply_histogrammed_function` or
+:func:`regularized_function` directly. For instance,
+:func:`mean_histogrammed_function` is implemented as ::
+
+  def mean_histogrammed_function(t, y, maxpoints):
+      return apply_histogrammed_function(numpy.mean, t, y, maxpoints)
+
+More complicated functions can be defined; for instance, one could use
+:func:`numkit.timeseries.tcorrel` to compute the correlation time of
+the data in short blocks::
+
+   def tc_histogrammed_function(t, y, maxpoints):
+      dt = numpy.mean(numpy.diff(t))
+      def get_tcorrel(y):
+         t = numpy.cumsum(dt*numpy.ones_like(y)) - dt
+         results = tcorrel(t, y, nstep=1)
+         return results['tc']
+      return apply_histogrammed_function(get_tcorrel, t, y, bins=maxpoints)
+
+(This particular function (implemented as
+:func:`numkit.timeseries.tc_histogrammed_function`) is not very
+robust, for instance it has problems when there are only very few data
+points in each bin because in this case the auto correlation function
+is not well defined.)
+
+.. autofunction:: numkit.timeseries.mean_histogrammed_function
+.. autofunction:: numkit.timeseries.rms_histogrammed_function
+.. autofunction:: numkit.timeseries.min_histogrammed_function
+.. autofunction:: numkit.timeseries.max_histogrammed_function
+.. autofunction:: numkit.timeseries.median_histogrammed_function
+.. autofunction:: numkit.timeseries.percentile_histogrammed_function
+.. autofunction:: numkit.timeseries.error_histogrammed_function
+.. autofunction:: numkit.timeseries.circmean_histogrammed_function
+.. autofunction:: numkit.timeseries.circstd_histogrammed_function
+.. autofunction:: numkit.timeseries.tc_histogrammed_function
+.. autofunction:: numkit.timeseries.apply_histogrammed_function
+.. autofunction:: numkit.timeseries.regularized_function
+
+
+Smoothing time series
+=====================
+
+Function :func:`numkit.timeseries.smooth` applies a window kernel to a
+time series and smoothes fluctuations. The number of points in the
+time series stays the same.
+
+.. autofunction:: numkit.timeseries.smooth
+.. autofunction:: numkit.timeseries.smoothing_window_length
+
+
+Exceptions
+==========
+
+.. autoexception:: numkit.timeseries.LowAccuracyWarning
+

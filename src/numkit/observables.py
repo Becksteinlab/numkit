@@ -1,62 +1,6 @@
 # numkit --- observables
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
-"""
-:mod:`numkit.observables` --- Observables as quantities with errors
-===================================================================
-
-Example showing how to use :class:`QuantityWithError`:
-   >>> from numkit.observables import QuantityWithError
-   >>> a = QuantityWithError(2.0, 1.0)
-   >>> a2 = QuantityWithError(2.0, 1.0)  # 2nd independent measurement of a
-   >>> a3 = QuantityWithError(2.0, 1.0)  # 3rd independent measurement of a
-   >>> b = QuantityWithError(-1, 0.5)
-   >>> a+a
-   4 (2)
-   >>> a+a2
-   4 (1.41421)
-   >>> (a+a+a)/3
-   2 (1)
-   >>> (a+a2+a3)/3
-   2 (0.57735)
-   >>> a/b
-   -2 (1.41421)
-
-Note that each quantity has an identity: it makes a difference to the
-error of a combined quantity such as a+a if the inputs are independent
-measurements of the same.
-
-.. SeeAlso:: Various packages that describe quantities with units, in
-             particular quantities_.
-
-.. _quantities: http://packages.python.org/quantities/
-
-
-.. autoclass:: QuantityWithError
-   :members:
-.. attribute:: QuantityWithError.value
-
-   Value of the observable A, typically the mean of a number of
-   observations, <A>.
-
-.. attribute:: QuantityWithError.error
-
-   Error of the observable, typically the square root of the
-   :attr:`QuantityWithError.variance` of the observations,
-   sqrt(<(A-<A>)**2>).
-
-   Changing the error automatically changes the
-   :attr:`QuantityWithError.variance`.
-
-.. attribute:: QuantityWithError.variance
-
-   Variance <(A-<A>)**2> of the observable. Changing the variance
-   automatically changes the :attr:`QuantityWithError.error`.
-
-.. autoclass:: QID
-   :members: union
-
-"""
 
 import numpy
 

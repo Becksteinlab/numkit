@@ -1,0 +1,26 @@
+=============
+ Source Code
+=============
+
+The source code itself is available in the `numkit git repository`_
+under the BSD 3-clause license (see file ``LICENSE``).
+
+
+
+Public git repository
+---------------------
+
+Get the sources with ::
+
+  git clone https://github.com/Becksteinlab/numkit
+
+
+Contributing
+------------
+
+Contributions in the form of `feedback, bug reports, suggestions`_ and
+pull requests are very welcome.
+
+
+.. _numkit git repository: https://github.com/Becksteinlab/numkit
+.. _feedback, bug reports, suggestions: http://github.com/Becksteinlab/numkit/issues

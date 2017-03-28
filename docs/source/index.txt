@@ -1,0 +1,55 @@
+.. GromacsWrapper documentation master file, created by sphinx-quickstart on Tue Jun 23 19:38:56 2009.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+====================================================
+  numkit -- a first aid kit of numerical helpers
+====================================================
+
+:Release: |release|
+:Date: |today|
+
+**numkit** contains numerical helper functions and classes that have
+been proven to be useful for analysis of molecular dynamics
+simulation. The package used to be part of GromacsWrapper_.
+
+:mod:`numkit` consists of a collection of functions and classes built
+on top of NumPy_ and SciPy_ to aid the numerical analysis of data. It
+is geared towards the use of data coming from molecular simulations,
+namely time series. It is used in :mod:`gromacs.formats.XVG`.
+
+Please note that these functions are provided "as is" and no guarantee
+is given that they are accurate or free from error. Bug reports and
+test cases are very welcome. Please submit them through the Github
+`Issue Tracker`_.
+
+
+.. SeeAlso:: Core functionality is based on SciPy_ (:mod:`scipy` module).
+
+.. _NumPy: https://numpy.scipy.org
+.. _SciPy: https://www.scipy.org/
+.. _GromacsWrapper: http://github.com/Becksteinlab/GromacsWrapper
+.. _Issue Tracker: http://github.com/Becksteinlab/numkit/issues
+
+
+Contents
+--------
+
+.. toctree::
+   :maxdepth: 1
+
+   src
+   fitting
+   timeseries
+   integration
+   observables
+
+
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
