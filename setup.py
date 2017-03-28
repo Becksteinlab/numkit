@@ -30,6 +30,6 @@ setup(name='numkit',
       scripts=[],
       license='BSD',
       long_description=open('README.rst').read(),
-      tests_require = ['numpy', 'pytest'],
-      install_requires=['numpy', 'scipy']
+      tests_require = ['numpy>=1.9', 'pytest'],
+      install_requires=['numpy>=1.9', 'scipy']
 )
