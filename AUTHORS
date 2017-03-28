@@ -1,0 +1,27 @@
+.. -*- mode: rst; coding: utf-8 -*-
+
+Authors of numkit
+=================
+
+numkit was originally a part of GromacsWrapper, which was originally
+hacked together by Oliver Beckstein.
+
+Any person contributing to the code of numkit (as evidenced by
+commits to the repository) should be listed in this file under the
+year of their first commit. GitHub handle is optional.
+
+
+2009
+----
+
+- Oliver Beckstein (@orbeckst)
+
+
+2016
+----
+
+- David Dotson (@dotsdl)
+
+
+We gratefully acknowledge code fixes contributed by
+@quantifiedcode-bot from Quantified Code https://www.quantifiedcode.com

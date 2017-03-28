@@ -1,0 +1,40 @@
+======================
+ CHANGELOG for numkit
+======================
+
+2017-xx-xx      1.0.0
+orbeckst
+
+* numkit is now a stand-alone package at
+  https://github.com/Becksteinlab/numkit
+  
+
+numkit was part of GromacsWrapper until release 0.6.2; the following
+are entries from GromacsWrapper CHANGES that pertain to numkit.
+
+2017-03-23      0.6.2
+orbeckst, dotsdl
+
+* fixed TypeError in numkit.integration.simps_error() (#115)
+
+
+2016-09-16      0.6.1
+orbeckst, quantifiedcode-bot
+
+* additional tests (including numkit)
+* code clean up (quantified code recommendations)
+
+
+2015-12-16      0.4.0
+orbeckst
+
+* docs at http://gromacswrapper.readthedocs.org
+
+
+2012-04-24     0.3.0
+orbeckst
+
+* scipy is now a package dependency (use in numkit and then XVG)
+
+Earlier releases did not have an explicit change log. See the commit
+history at https://github.com/orbeckst/GromacsWrapper for details.
