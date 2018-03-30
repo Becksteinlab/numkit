@@ -265,6 +265,16 @@ def mean_histogrammed_function(t, y, **kwargs):
     """
     return apply_histogrammed_function(numpy.mean, t, y, **kwargs)
 
+def std_histogrammed_function(t, y, **kwargs):
+    """Compute standard deviation of data *y* in bins along *t*.
+
+    Returns the standard deviation-regularised function *F* and the centers of the bins.
+
+    .. SeeAlso:: :func:`regularized_function` with *func* = :func:`numpy.std`
+    """
+    return apply_histogrammed_function(numpy.std, t, y, **kwargs)
+
+
 def rms_histogrammed_function(t, y, **kwargs):
     """Compute root mean square of data *y* in bins along *t*.
 

@@ -2,12 +2,16 @@
  CHANGELOG for numkit
 ======================
 
-2017-xx-xx      1.0.0
+2018-xx-xx      1.1.0
+orbeckst
+
+* added numkit.timeseries.std_histogrammed_function()
+
+2017-03-28      1.0.0
 orbeckst
 
 * numkit is now a stand-alone package at
   https://github.com/Becksteinlab/numkit
-  
 
 numkit was part of GromacsWrapper until release 0.6.2; the following
 are entries from GromacsWrapper CHANGES that pertain to numkit.
