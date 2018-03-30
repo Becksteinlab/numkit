@@ -10,7 +10,7 @@ For a basic installation just type the command::
 from setuptools import setup, find_packages
 
 setup(name='numkit',
-      version='1.0.0',
+      version='1.1.0-dev',
       description='numerical first aid kit',
       author='Oliver Beckstein',
       author_email='orbeckst@gmail.com',
