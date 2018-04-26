@@ -27,6 +27,11 @@ https://github.com/Becksteinlab/numkit ::
 
   git clone https://github.com/Becksteinlab/numkit
 
+Python 3
+========
+
+Python 3 support for this package is in alpha state
+
 
 Contributing
 ============
