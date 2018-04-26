@@ -61,11 +61,11 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             returnshape = True
             x=x.reshape(tuple(shapex))
         elif len(x.shape) != len(dy.shape):
-            raise ValueError, "If given, shape of x must be 1-d or the " \
-                  "same as dy."
+            raise ValueError("If given, shape of x must be 1-d or the "
+                  "same as dy.")
         if x.shape[axis] != N:
-            raise ValueError, "If given, length of x along axis must be the " \
-                  "same as dy."
+            raise ValueError("If given, length of x along axis must be the " \
+                  "same as dy.")
     else:
         last_dx = first_dx = dx
         avglast_dx = avgfirst_dx = dx
@@ -78,8 +78,8 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
         slice1 = (slice(None),)*nd
         slice2 = (slice(None),)*nd
         if not even in ['avg', 'last', 'first']:
-            raise ValueError, \
-                  "Parameter 'even' must be 'avg', 'last', or 'first'."
+            raise ValueError(
+                  "Parameter 'even' must be 'avg', 'last', or 'first'.")
         if even in ['avg', 'first']:
             # Compute using Simpson's rule on first intervals
             slice0 = tupleset(slice1, axis, -3)
