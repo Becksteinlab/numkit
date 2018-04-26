@@ -1,6 +1,7 @@
 # numkit --- observables
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
+from __future__ import division
 
 import numpy
 
@@ -221,7 +222,7 @@ class QuantityWithError(object):
         error = self._dist(val*self.error, err*self.value)
         return QuantityWithError(val * self.value, error=error, qid=self.qid.union(qid))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """x.__div__(y)  <-->  x / y"""
         val,err,qid = self._astuple(other)
         if self.isSame(other):
@@ -230,7 +231,7 @@ class QuantityWithError(object):
         error = self._dist(self.error/val, err*self.value/val**2)
         return QuantityWithError(self.value/val, error=error, qid=self.qid.union(qid))
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         """x.__rdiv__(y)  <-->  y / x"""
         val,err,qid = self._astuple(other)
         if self.isSame(other):
@@ -238,6 +239,10 @@ class QuantityWithError(object):
             return QuantityWithError(val/self.value, 0, qid=self.qid)
         error = self._dist(err/self.value, self.error*val/self.value**2)
         return QuantityWithError(val/self.value, error=error, qid=self.qid.union(qid))
+
+    # Python 2 compatible
+    __div__ = __truediv__
+    __rdiv__ = __rtruediv__
 
     def __neg__(self):
         """x.__neg__()  <-->  -x"""
