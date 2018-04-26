@@ -2,7 +2,7 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
-from itertools import izip
+from six.moves import zip as izip
 
 import numpy
 import scipy.signal
@@ -76,7 +76,7 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
 
     ac = scipy.signal.fftconvolve(series,series[::-1,...],**kwargs)
 
-    origin = ac.shape[0]/2        # should work for both odd and even len(series)
+    origin = int(ac.shape[0]/2)        # should work for both odd and even len(series)
     ac = ac[origin:]              # only use second half of the symmetric acf
     assert len(ac) <= len(series), "Oops: len(ac)={0:d}  len(series)={1:d}".format(len(ac), len(series))
     if paddingcorrection and  not kwargs['mode'] == 'valid':     # 'valid' was not 0-padded

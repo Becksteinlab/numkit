@@ -3,9 +3,10 @@
 ======================
 
 2018-xx-xx      1.1.0
-orbeckst
+orbeckst, kain88-de
 
 * added numkit.timeseries.std_histogrammed_function()
+* added minimal python3 support
 
 2017-03-28      1.0.0
 orbeckst
