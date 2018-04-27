@@ -107,7 +107,7 @@ def linfit(x,y,dy=None):
         sb *= sigmadata
         Q = 1.0
     else:
-        Q = scipy.stats.chisqprob(chi2,n-2)
+        Q = scipy.stats.distributions.chi2.sf(chi2, n-2)
 
     return {"intercept":a,"slope":b,
             "sigma_intercept":sa,"sigma_slope":sb,
