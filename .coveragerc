@@ -4,12 +4,18 @@ source = numkit
 
 [report]
 exclude_lines =
+    # omit lines marked with: # pragma: no cover
     pragma: no cover
     def __repr__
     def _repr_html_
     def __str__
+    # Don't complain if tests don't hit defensive assertion code:
+    raise AssertionError    
     raise NotImplementedError
     if __name__ == .__main__.:
 
 omit =
     src/numkit/tests/*
+    # omit the versioneer-installed _version.py
+    src/numkit/_version.py
+

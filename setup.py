@@ -8,9 +8,11 @@ For a basic installation just type the command::
 """
 
 from setuptools import setup, find_packages
+import versioneer
 
 setup(name='numkit',
-      version='1.1.0-dev',
+      version=versioneer.get_version(),
+      cmdclass=versioneer.get_cmdclass(),
       description='numerical first aid kit',
       author='Oliver Beckstein',
       author_email='orbeckst@gmail.com',

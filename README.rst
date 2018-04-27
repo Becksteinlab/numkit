@@ -11,7 +11,7 @@ GromacsWrapper_ and related projects.
 Originally, **numkit** was part of GromacsWrapper_ but was split off
 into its own small package in version 0.7.0 of GromacsWrapper.
 
-.. _GromacsWrapper: http://gromacswrapper.readthedocs.org/
+.. _GromacsWrapper: https://gromacswrapper.readthedocs.org/
 
 
 Getting numkit
@@ -46,7 +46,7 @@ reports and pull requests.
    :scale: 100%
    
 .. |docs| image:: https://readthedocs.org/projects/numkit/badge/?version=latest
-   :target: http://numkit.readthedocs.org/en/latest/?badge=latest
+   :target: https://numkit.readthedocs.org/en/latest/?badge=latest
    :alt: Documentation
    :scale: 100%
    
