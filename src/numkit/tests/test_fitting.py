@@ -21,15 +21,37 @@ import pytest
 def linear_data(m=-2.8, t=123.45, sigma=1.5):
     def f(x):
         return m*x + t
-
     # make random numbers consistent
     np.random.seed(2018)
-
     X = np.linspace(-20, 20, 100)
     dY = sigma*np.random.standard_normal(size=len(X))
     Y = f(X) + dY
-
     return X, Y, dY
+
+@pytest.fixture(scope="module")
+def exp_decay_data(a=2.30785, sigma=1.5):
+    def f(x):
+        return np.exp(-a*x)
+    # make random numbers consistent
+    np.random.seed(2018)
+    X = np.linspace(-4, 10, 100)
+    dY = sigma*np.random.standard_normal(size=len(X))
+    Y = f(X) + dY
+    return X, Y, dY
+
+
+@pytest.fixture(scope="module")
+def gaussian_data(mu=-4.2, s=0.455, a=8.0, sigma=0.5):
+    def f(x):
+        return a/(np.sqrt(2*np.pi*s**2)) * np.exp(-(x-mu)**2/(2*s**2))
+    # make random numbers consistent
+    np.random.seed(2018)
+    X = np.linspace(-10, 2, 100)
+    dY = sigma*np.random.standard_normal(size=len(X))
+    Y = f(X) + dY
+    return X, Y, dY
+
+
 
 @pytest.fixture(scope="module")
 def linfit_noerror(linear_data):
@@ -62,4 +84,20 @@ def test_linfit_noerror(linfit_noerror, quantity, expected):
     ("Q", 0.5301523165173313)])
 def test_linfit_witherror(linfit_witherror, quantity, expected):
     assert_almost_equal(linfit_witherror[quantity], expected)
+
+
+def test_FitLin(linear_data):
+    X, Y, _ = linear_data
+    fit = numkit.fitting.FitLin(X, Y, parameters=(1, 0))
+    assert_almost_equal(fit.parameters, [-2.8087044, 123.2908967])
+
+def test_FitExp(exp_decay_data):
+    X, Y, _ = exp_decay_data
+    fit = numkit.fitting.FitExp(X, Y, parameters=(1.0,))
+    assert_almost_equal(fit.parameters, [2.3078684])
+
+def test_FitGauss(gaussian_data):
+    X, Y, _ = gaussian_data
+    fit = numkit.fitting.FitGauss(X, Y, parameters=(-2, 1.0, 5.0))
+    assert_almost_equal(fit.parameters, [-4.2093312,  0.4403894,  7.6803708])
 
