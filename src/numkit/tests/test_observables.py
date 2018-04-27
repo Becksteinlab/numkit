@@ -91,11 +91,30 @@ class TestQuantityWithError(object):
         ("Q2", "Q2", True),
     ])
     def test_sameness(self, Q, q1, q2, same):
+        assert (Q[q1].isSame(Q[q2])) == same
+
+    @pytest.mark.parametrize("q1,q2,same", [
+        ("Q1", "Q1", True),
+        ("Q1", "Q1b", True),
+        ("Q1", "Q2", False),
+        ("Q2", "Q2", True),
+    ])
+    def test_equality(self, Q, q1, q2, same):
         assert (Q[q1] == Q[q2]) == same
+
+    @pytest.mark.parametrize("op,ref",
+                             [("Q1 {} Q2".format(op),
+                               "Q1.value {} Q2.value".format(op)) for op in
+                              (">", ">=", "<", "<=", "==")])
+    def test_comparisons(self, Q1, Q2, op, ref):
+        assert eval(op) == eval(ref)
+
 
     @pytest.mark.parametrize("op,value", [
         (lambda x, y: 5*x, True),
         (lambda x, y: x*5, True),
+        (lambda x, y: -x, True),
+        (lambda x, y: abs(x), True),
         (lambda x, y: x + x, True),
         (lambda x, y: x - x, True),
         (lambda x, y: x * x, True),
@@ -114,3 +133,12 @@ class TestQuantityWithError(object):
     ]   )
     def test_sameness_algebra(self, Q1, Q2, op, value):
         assert Q1.isSame(op(Q1, Q2)) == value
+
+    def test_copy(self, Q1):
+        other = Q1.copy()
+        assert not Q1.isSame(other)
+
+    def test_deepcopy(self, Q1):
+        other = Q1.deepcopy()
+        assert Q1.isSame(other)
+

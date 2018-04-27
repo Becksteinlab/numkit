@@ -285,12 +285,39 @@ class QuantityWithError(object):
     def __abs__(self):
         return QuantityWithError(self.value.__abs__(), self.error, qid=self.qid)
 
+    # only python 2
     def __cmp__(self, other):
         """x.__cmp__(other) <==> cmp(x.value,other.value)"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
         val,err,qid = self._astuple(other)
         result = cmp(self.value, val)
         return result
+
+    def __eq__(self, other):
+        """x.__eq__(other) <==> x.value == other.value"""
+        # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
+        val,err,qid = self._astuple(other)
+        return self.value == val
+
+    def __lt__(self, other):
+        """x.__lt__(other) <==> x.value < other.value"""
+        # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
+        val,err,qid = self._astuple(other)
+        return self.value < val
+
+    def __le__(self, other):
+        """x.__le__(other) <==> x.value <= other.value"""
+        # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
+        val,err,qid = self._astuple(other)
+        return self.value <= val
+
+    def __ge__(self, other):
+        """x.__ge__(other) <==> x.value >= other.value"""
+        return other <= self
+
+    def __gt__(self, other):
+        """x.__lt__(other) <==> x.value > other.value"""
+        return other < self
 
     def __coerce__(self, other):
         return self, self.asQuantityWithError(other)

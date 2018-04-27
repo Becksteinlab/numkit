@@ -7,6 +7,7 @@ orbeckst, kain88-de
 
 * added numkit.timeseries.std_histogrammed_function()
 * added minimal python3 support
+* fixed QuantityWithErrors for python 3
 
 2017-03-28      1.0.0
 orbeckst
