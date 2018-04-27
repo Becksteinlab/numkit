@@ -24,10 +24,13 @@ test cases are very welcome. Please submit them through the Github
 `Issue Tracker`_.
 
 
-.. SeeAlso:: Core functionality is based on SciPy_ (:mod:`scipy` module).
+.. SeeAlso:: Core functionality is based on SciPy_ (:mod:`scipy`
+	     module). For more general time series analysis see
+	     pandas_.
 
 .. _NumPy: https://numpy.scipy.org
 .. _SciPy: https://www.scipy.org/
+.. _pandas: https://pandas.pydata.org/
 .. _GromacsWrapper: http://github.com/Becksteinlab/GromacsWrapper
 .. _Issue Tracker: http://github.com/Becksteinlab/numkit/issues
 

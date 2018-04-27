@@ -13,7 +13,7 @@
 import numkit.fitting
 
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 
 import pytest
 
@@ -86,15 +86,40 @@ def test_linfit_witherror(linfit_witherror, quantity, expected):
     assert_almost_equal(linfit_witherror[quantity], expected)
 
 
-def test_FitLin(linear_data):
+@pytest.fixture(scope="class")
+def FitLin(linear_data):
     X, Y, _ = linear_data
-    fit = numkit.fitting.FitLin(X, Y, parameters=(1, 0))
-    assert_almost_equal(fit.parameters, [-2.8087044, 123.2908967])
+    return numkit.fitting.FitLin(X, Y, parameters=(1, 0))
 
-def test_FitExp(exp_decay_data):
+class TestFitLin(object):
+    ref_x = np.linspace(-9.3, 5.7, 5)
+    ref_y = np.array([149.4118475, 138.8792061, 128.3465646,
+                      117.8139232, 107.2812817])
+
+    def test_parameters(self, FitLin):
+        assert_almost_equal(FitLin.parameters, [-2.8087044, 123.2908967])
+
+    def test_fitting(self, FitLin):
+        Y = FitLin.fit(self.ref_x)
+        assert_almost_equal(Y, self.ref_y)
+
+
+@pytest.fixture(scope="class")
+def FitExp(exp_decay_data):
     X, Y, _ = exp_decay_data
-    fit = numkit.fitting.FitExp(X, Y, parameters=(1.0,))
-    assert_almost_equal(fit.parameters, [2.3078684])
+    return numkit.fitting.FitExp(X, Y, parameters=(1.0,))
+
+class TestFitExp(object):
+    ref_x = np.linspace(-5, 5, 5)
+    ref_y = np.array([1.0267685e+05, 3.2043229e+02, 1.0000000e+00,
+                      3.1207841e-03, 9.7392934e-06])
+
+    def test_parameters(self, FitExp):
+        assert_almost_equal(FitExp.parameters, [2.3078684])
+
+    def test_fitting(self, FitExp):
+        Y = FitExp.fit(self.ref_x)
+        assert_allclose(Y, self.ref_y)
 
 def test_FitGauss(gaussian_data):
     X, Y, _ = gaussian_data
