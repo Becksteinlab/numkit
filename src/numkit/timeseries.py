@@ -2,6 +2,8 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
+from __future__ import absolute_import, division
+
 from six.moves import zip as izip
 
 import numpy
@@ -232,7 +234,7 @@ def smooth(x, window_len=11, window='flat'):
 
     s = numpy.r_[x[window_len-1:0:-1], x, x[-1:-window_len:-1]]
     y = numpy.convolve(w/w.sum(), s, mode='valid')
-    return y[(window_len-1)/2:-(window_len-1)/2]  # take off repeats on ends
+    return y[(window_len-1)//2:-(window_len-1)//2]  # take off repeats on ends
 
 def smoothing_window_length(resolution, t):
     """Compute the length of a smooting window of *resolution* time units.

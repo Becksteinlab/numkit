@@ -47,5 +47,8 @@ class TestRegularizedFunction(object):
         # assert_almost_equal(np.max(Y), np.max(data[1]))
         # add test for Y data (but has randomness)
 
-
-
+@pytest.mark.parametrize('window', (
+    'flat', 'hanning', 'hamming', 'bartlett', 'blackman'))
+def test_smooth(data, window):
+    a = numkit.timeseries.smooth(data[1], window=window)
+    assert len(a) == len(data[1])
