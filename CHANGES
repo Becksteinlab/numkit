@@ -2,6 +2,11 @@
  CHANGELOG for numkit
 ======================
 
+2018-08-08      1.1.1
+orbeckst
+
+* fixed numkit.timeseries.smooth() under Python 3 (issue #7)
+
 2018-04-27      1.1.0
 orbeckst, kain88-de
 
