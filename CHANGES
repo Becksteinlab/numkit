@@ -2,6 +2,13 @@
  CHANGELOG for numkit
 ======================
 
+
+2018-08-08      1.1.2
+orbeckst
+
+Mistake in pypi upload: needs new version number.
+Identical to 1.1.1 on GitHub.
+
 2018-08-08      1.1.1
 orbeckst
 
