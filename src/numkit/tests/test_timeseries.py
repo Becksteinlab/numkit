@@ -26,6 +26,7 @@ class TestRegularizedFunction(object):
         assert len(X) == bins
         assert_almost_equal(np.max(Y), np.max(data[1]))
 
+    @pytest.mark.filterwarnings("ignore:tcorrel")
     @pytest.mark.parametrize("func", (
         "rms_histogrammed_function",
         "mean_histogrammed_function",
@@ -46,6 +47,17 @@ class TestRegularizedFunction(object):
         assert len(X) == bins
         # assert_almost_equal(np.max(Y), np.max(data[1]))
         # add test for Y data (but has randomness)
+
+    @pytest.mark.parametrize("func", (
+        "error_histogrammed_function",
+        "tc_histogrammed_function",
+        ))
+    @pytest.mark.parametrize("bins", [1000, 10000])
+    def test_func_warns(self, func, data, bins):
+        function = getattr(numkit.timeseries, func)
+        with pytest.warns(numkit.LowAccuracyWarning):
+            Y, X = function(data[0], data[1], bins=bins)
+
 
 @pytest.mark.parametrize('window', (
     'flat', 'hanning', 'hamming', 'bartlett', 'blackman'))

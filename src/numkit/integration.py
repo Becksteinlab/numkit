@@ -185,7 +185,7 @@ def _trapz_2pt_error2(dy1, dy2, dx):
     For errors dy1 and dy2 and spacing dx."""
     return (0.5*dx)**2 * (dy1**2 + dy2**2)
 
-def _trapz_error2(dy,start,stop,x,dx):
+def _trapz_error2(dy,start,stop,x,dx,axis):
     # not tested
     nd = len(dy.shape)
     if start is None:

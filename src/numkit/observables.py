@@ -97,14 +97,14 @@ class QuantityWithError(object):
         self.covariance = {self.qid: self.variance} # record covariances with other
         self.confidence = kwargs.pop('confidence', 0.99)   # for comparisons/not used yet
 
-    def error():
+    @property
+    def error(self):
         """Error of a quantity as sqrt of the variance."""
-        def fget(self):
-            return numpy.sqrt(self.variance)
-        def fset(self, x):
-            self.variance = x*x
-        return locals()
-    error = property(**error())
+        return numpy.sqrt(self.variance)
+
+    @error.setter
+    def error(self, x):
+        self.variance = x*x
 
     def isSame(self, other):
         """Check if *other* is 100% correlated with *self*.
