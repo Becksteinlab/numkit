@@ -214,7 +214,7 @@ class FitLin(FitFunc):
         return "<FitLin"+str(self.parameters)+">"
 
 class FitGauss(FitFunc):
-    """y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))
+    r"""y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))
 
     Fits an un-normalized gaussian (height scaled with parameter p[2]).
 
