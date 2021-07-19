@@ -143,7 +143,7 @@ def tcorrel(x, y, nstep=100, debug=False):
         wmsg = "tcorrel(): Only %d datapoints for the chosen nstep=%d; " \
             "ACF will possibly not be accurate." % (len(_y), nstep)
         warnings.warn(wmsg, category=LowAccuracyWarning)
-        logger.warn(wmsg)
+        logger.warning(wmsg)
 
     acf = autocorrelation_fft(_y, normalize=False)
     try:
