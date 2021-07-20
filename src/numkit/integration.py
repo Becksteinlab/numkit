@@ -12,8 +12,15 @@
 """
 
 import numpy
-import scipy.integrate
-from scipy.integrate.quadrature import tupleset
+
+try:
+    from scipy.integrate.quadrature import tupleset
+except ImportError:
+    # from https://github.com/scipy/scipy/blob/v1.1.0/scipy/integrate/quadrature.py
+    def tupleset(t, i, value):
+        l = list(t)
+        l[i] = value
+        return tuple(l)
 
 import logging
 logger = logging.getLogger("numkit.integration")
