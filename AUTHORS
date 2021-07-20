@@ -8,7 +8,7 @@ hacked together by Oliver Beckstein.
 
 Any person contributing to the code of numkit (as evidenced by
 commits to the repository) should be listed in this file under the
-year of their first commit. GitHub handle is optional.
+year of their first commit. GitHub handle in parentheses is optional.
 
 
 2009
@@ -26,6 +26,11 @@ year of their first commit. GitHub handle is optional.
 ----
 
 - Max Linke (@kain88-de)
+
+2019
+----
+
+- Thomas Heavey (@theavey)
 
 
 We gratefully acknowledge code fixes contributed by
