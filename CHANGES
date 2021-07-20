@@ -2,7 +2,7 @@
  CHANGELOG for numkit
 ======================
 
-2021-07-??      1.2.0
+2021-07-20      1.2.0
 theavey, orbeckst
 
 * supports Python 2.7 and Python 3.6 - 3.9 (issues #11, #12)
