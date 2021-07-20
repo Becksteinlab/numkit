@@ -11,20 +11,31 @@ on:
     branches:
       - "master"
 
+concurrency:
+  group: "${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
 jobs:
   test:
+    name: Test ${{ matrix.os }} with Python ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
-        os: 
-          - ubuntu-latest
-        python-version:
-          - 2.7
-          - 3.6
-          - 3.7
-          - 3.8
-          - 3.9
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+        python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+        exclude:
+          - os: macOS-latest
+            python-version: 3.6
+          - os: macOS-latest
+            python-version: 3.7
+          - os: macOS-latest
+            python-version: 3.9
+          - os: windows-latest
+            python-version: 3.6
+          - os: windows-latest
+            python-version: 3.7
+          - os: windows-latest
+            python-version: 3.9
 
     steps:
     - uses: actions/checkout@v2
@@ -33,37 +44,32 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-        architecture: x64
 
-    - name: Environment Information
-      shell: bash -l {0}
-      run: |
-        python --version
+    - name: Display Python version
+      run: python -c "import sys; print(sys.version)"
 
     - name: Install pytest, pytest plugins
-      shell: bash -l {0}
       run: |
+        python -m pip install wheel
         python -m pip install pytest pytest-cov pytest-pep8
 
-    - name: Install numkit
-      shell: bash -l {0}
+    - name: Install main dependencies
       run: |
         python -m pip install six
         python -m pip install --only-binary=numpy numpy
         python -m pip install --only-binary=scipy scipy 
 
     - name: Install package
-      shell: bash -l {0}
       run: |
         python -m pip install .
 
     - name: Run tests
-      shell: bash -l {0}
       run: |
-        pytest -v --cov numkit --cov-report=xml src/numkit/tests
+        pytest -v --cov numkit --cov-report=xml --color=yes src/numkit/tests
 
     - name: Codecov
-      uses: codecov/codecov-action@v1.5.2
+      uses: codecov/codecov-action@v1
       with:
+        name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         file: ./coverage.xml
         fail_ci_if_error: true
