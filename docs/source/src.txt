@@ -1,3 +1,5 @@
+.. _source-code:
+
 =============
  Source Code
 =============
@@ -13,6 +15,10 @@ Public git repository
 Get the sources with ::
 
   git clone https://github.com/Becksteinlab/numkit
+
+and install with ::
+
+  pip install ./numkit
 
 
 Contributing

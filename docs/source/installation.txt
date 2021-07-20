@@ -1,0 +1,15 @@
+==============
+ Installation
+==============
+
+You can install from :ref:`source-code` or with :program:`pip` from
+the `numkit PyPi repository`_ with ::
+
+  pip install numkit
+
+Python 2.7 and recent Python 3 are all supported.
+
+
+
+.. _numkit PyPi repository: https://pypi.org/project/numkit/
+

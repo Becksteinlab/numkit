@@ -37,12 +37,12 @@ master_doc = 'index'
 
 # General substitutions.
 project = u'numkit'
-copyright = u'2009-2018, The Authors of numkit (see AUTHORS)'
+copyright = u'2009-2021, The Authors of numkit (see AUTHORS)'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
-packageversion = "1.1.2"
+packageversion = "1.2.0"
 
 # The short X.Y version.
 version = '.'.join(packageversion.split('.')[:2])

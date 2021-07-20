@@ -8,6 +8,8 @@ import numpy
 class QID(frozenset):
     """Identity of a :class:`QuantityWithError`.
 
+    The basic idea::
+
       QID(iterable) --> identity
       QID() --> ``None``
 
@@ -110,25 +112,30 @@ class QuantityWithError(object):
         """Check if *other* is 100% correlated with *self*.
 
         ``True`` if
-          `- *other* is the same observable (instance)
+
+           - *other* is the same observable (instance)
            - *other* was derived from *self* without using any
              other independent quantities with errors, e.g. ::
+
                 >>> a = QuantityWithError(1.0, 0.5)
                 >>> b = a**2 - a*2
                 >>> a.isSame(b)
                 True
 
         ``False`` if
+
             - *other* is a scalar (without an error), or
             - *other* was computed from *self* without involvement of
               any other observables.
 
-        :TODO: How should one treat the case when a quantity is used
-               again in an operation, e.g.  ::
-                 c = a + b
-                 d = c/a
-               How to compute the error on d? What should the result
-               for ``c.isSame(a)`` be?
+        **Limitations**: How should one treat the case when a quantity is used
+        again in an operation, e.g.  ::
+
+           c = a + b
+           d = c/a
+
+        How to compute the error on d? What should the result
+        for ``c.isSame(a)`` be?
         """
         try:
             return self.qid == other.qid
