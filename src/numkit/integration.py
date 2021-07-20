@@ -12,11 +12,23 @@
 """
 
 import numpy
-import scipy.integrate
-from scipy.integrate.quadrature import tupleset
+
+try:
+    from scipy.integrate.quadrature import tupleset
+except ImportError:
+    # from https://github.com/scipy/scipy/blob/v1.1.0/scipy/integrate/quadrature.py
+    def tupleset(t, i, value):
+        l = list(t)
+        l[i] = value
+        return tuple(l)
 
 import logging
 logger = logging.getLogger("numkit.integration")
+# monkey patch old logger (warn is deprecated but warning does
+# not exist in 2.7) --- remove when we drop Python 2.7
+if not hasattr(logger, "warning"):
+    logger.warning = logger.warn
+
 
 def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.
