@@ -40,9 +40,9 @@ Contributions are very welcome in all forms, especially through issue
 reports and pull requests.
 
 
-.. |build| image:: https://travis-ci.org/Becksteinlab/numkit.svg?branch=master
-   :target: https://travis-ci.org/Becksteinlab/numkit
+.. |build| image:: https://github.com/Becksteinlab/numkit/actions/workflows/ci.yaml/badge.svg?branch=master
    :alt: Build status
+   :target: https://github.com/Becksteinlab/numkit/actions/workflows/ci.yaml
    :scale: 100%
    
 .. |docs| image:: https://readthedocs.org/projects/numkit/badge/?version=latest
