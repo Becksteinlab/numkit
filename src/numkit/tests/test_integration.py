@@ -10,10 +10,12 @@
 ====================================
 
 """
+import pytest
 
-import numkit.integration
 import numpy
 from numpy.testing import assert_equal, assert_almost_equal
+
+import numkit.integration
 
 class Test_simps_error(object):
     # special case with constant spacing and constant error (=1.0) so
@@ -87,4 +89,10 @@ class Test_simps_error(object):
         assert_almost_equal(err, 2.7613402542968153, err_msg="Simps error for un-even spacing")
 
 
+def test_uneven_spacing():
+    # simple regression test
+    DY = numpy.array([0.1, 0.2, 0.1, 0.2, 1.0])
+    X = numpy.array([-1, 0, 2, 2.5, 5])
+    err = numkit.integration.simps_error(DY, x=X)
+    assert err == pytest.approx(0.7632168761236874)
 

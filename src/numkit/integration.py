@@ -17,6 +17,11 @@ from scipy.integrate.quadrature import tupleset
 
 import logging
 logger = logging.getLogger("numkit.integration")
+# monkey patch old logger (warn is deprecated but warning does
+# not exist in 2.7) --- remove when we drop Python 2.7
+if not hasattr(logger, "warning"):
+    logger.warning = logger.warn
+
 
 def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.

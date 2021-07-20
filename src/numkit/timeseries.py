@@ -12,8 +12,13 @@ import scipy.integrate
 import scipy.stats
 
 import warnings
+
 import logging
 logger = logging.getLogger("numkit.timeseries")
+# monkey patch old logger (warn is deprecated but warning does
+# not exist in 2.7) --- remove when we drop Python 2.7
+if not hasattr(logger, "warning"):
+    logger.warning = logger.warn
 
 from numkit import LowAccuracyWarning
 
