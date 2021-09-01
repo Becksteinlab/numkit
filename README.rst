@@ -17,9 +17,13 @@ into its own small package in version 0.7.0 of GromacsWrapper.
 Getting numkit
 ==============
 
-Install from PyPi with ::
+Install with ``pip`` from PyPi with ::
 
     pip install numkit
+
+or with ``conda`` from the *bioconda* channel ::
+
+   conda install -c conda-forge -c bioconda numkit
 
 The source code is available under the BSD 3-clause license (see file
 LICENSE) from GitHub in the repository

@@ -5,20 +5,14 @@
 :mod:`numkit` --- Helper functions for scipy and friends
 ========================================================
 
-:Author:  Oliver Beckstein <orbeckst@gmail.com>
-:Year:    2010
-:Licence: Modified BSD
-
 A collection of functions and classes that support the analysis of molecular
-dynamics trajectories (i.e. mostly time series). Because these functions could
-conceivably be useful in other contexts as well they were moved into a separate
-package with a very permissive licence.
+dynamics trajectories (i.e. mostly time series).
 
 Please note that these functions are provided "as is" and no guarantee is given
 that they are accurate or free from error. Bug reports and test cases are very
 welcome. Please submit them through the Github `Issue Tracker`_.
 
-.. _Issue Tracker: http://github.com/orbeckst/GromacsWrapper/issues
+.. _Issue Tracker: https://github.com/Becksteinlab/numkit/issues
 
 The following modules are available and can be imported when needed:
 

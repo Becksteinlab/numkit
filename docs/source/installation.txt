@@ -2,14 +2,30 @@
  Installation
 ==============
 
-You can install from :ref:`source-code` or with :program:`pip` from
-the `numkit PyPi repository`_ with ::
+You can install from :ref:`source-code` or as a package.
+
+
+pip installation
+================
+
+Install with :program:`pip` from the `numkit PyPi repository`_ with ::
 
   pip install numkit
 
 Python 2.7 and recent Python 3 are all supported.
 
-
-
 .. _numkit PyPi repository: https://pypi.org/project/numkit/
 
+
+conda installation
+==================
+
+.. versionadded:: 1.2.1
+
+Install with conda_ package manager from the bioconda_ channel with ::
+
+  conda install -c conda-forge -c bioconda numkit
+
+  
+.. _conda: https://docs.conda.io  
+.. _bioconda: https://bioconda.github.io/ 
