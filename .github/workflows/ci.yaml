@@ -1,9 +1,9 @@
 name: CI
 
 on:
-  # run once a day at 3:33 UTC
+  # run every Sunday at 3:33 UTC
   schedule:
-    - cron: "33 3 * * *"
+    - cron: "33 3 * * 0"
   push:
     branches:
       - "master"
@@ -73,4 +73,4 @@ jobs:
       with:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         file: ./coverage.xml
-        fail_ci_if_error: true
+        fail_ci_if_error: false

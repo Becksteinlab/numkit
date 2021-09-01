@@ -1,4 +1,0 @@
-name: numkit
-dependencies:
-- numpy>=1.9
-- scipy
