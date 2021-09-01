@@ -31,14 +31,15 @@ test cases are very welcome. Please submit them through the Github
 .. _NumPy: https://numpy.scipy.org
 .. _SciPy: https://www.scipy.org/
 .. _pandas: https://pandas.pydata.org/
-.. _GromacsWrapper: http://github.com/Becksteinlab/GromacsWrapper
-.. _Issue Tracker: http://github.com/Becksteinlab/numkit/issues
+.. _GromacsWrapper: https://github.com/Becksteinlab/GromacsWrapper
+.. _Issue Tracker: https://github.com/Becksteinlab/numkit/issues
 
 
 Contents
 --------
 
 .. toctree::
+   :numbered:
    :maxdepth: 1
 	      
    installation

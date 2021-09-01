@@ -26,7 +26,7 @@ measurements of the same.
 .. SeeAlso:: Various packages that describe quantities with units, in
              particular quantities_.
 
-.. _quantities: http://packages.python.org/quantities/
+.. _quantities: https://packages.python.org/quantities/
 
 
 Classes
@@ -34,26 +34,17 @@ Classes
 
 .. autoclass:: numkit.observables.QuantityWithError
    :members:
-.. attribute:: numkit.observables.QuantityWithError.value
+      
+   .. attribute:: value
 
-   Value of the observable :math:`A`, typically the mean of a number of
-   observations, :math:`\langle A \rangle`.
+      Value of the observable :math:`A`, typically the mean of a number of
+      observations, :math:`\langle A \rangle`.
 
-.. attribute:: numkit.observables.QuantityWithError.error
+   .. attribute:: variance
 
-   Error of the observable, typically the square root of the
-   :attr:`~numkit.observables.QuantityWithError.variance` of the
-   observations, :math:`\sqrt{\langle (A - \langle A \rangle)^2
-   \rangle}`.
-
-   Changing the error automatically changes the
-   :attr:`~numkit.observables.QuantityWithError.variance`.
-
-.. attribute:: numkit.observables.QuantityWithError.variance
-
-   Variance :math:`\langle (A - \langle A \rangle)^2 \rangle` of the
-   observable. Changing the variance automatically changes the
-   :attr:`~numkit.observables.QuantityWithError.error`.
+      Variance :math:`\langle (A - \langle A \rangle)^2 \rangle` of the
+      observable. Changing the variance automatically changes the
+      :attr:`~numkit.observables.QuantityWithError.error`.
 
 .. autoclass:: numkit.observables.QID
    :members: union

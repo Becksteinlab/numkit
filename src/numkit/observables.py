@@ -40,9 +40,8 @@ class QuantityWithError(object):
     """Number with error and basic error propagation arithmetic.
 
     The quantity is assumed to be a mean of an observable
-    (:attr:`~QuantityWithError.value`) with an associated (Gaussian) error
-    :attr:`~QuantityWithError.error` (which is the sqrt of the variance
-    :attr:`~QuantityWithError.variance` of the data).
+    (:attr:`value`) with an associated (Gaussian) error :attr:`error`
+    (which is the sqrt of the variance :attr:`variance` of the data).
 
     The covariance is not taken into account in the `error
     propagation`_ (i.e. all quantities are assumed to be uncorrelated)
@@ -52,6 +51,7 @@ class QuantityWithError(object):
     complicated expression.
 
     .. _error propagation: http://mathworld.wolfram.com/ErrorPropagation.html
+
     """
     # A quantity has a unique id which is conserved through operations with
     # itself. "Sameness" of two quantities is tested on this id with
@@ -101,7 +101,14 @@ class QuantityWithError(object):
 
     @property
     def error(self):
-        """Error of a quantity as sqrt of the variance."""
+        r"""Error of the observable.
+
+        The error is taken as the square root of the :attr:`variance`
+        of the observations, :math:`\sqrt{\langle (A - \langle A
+        \rangle)^2 \rangle}`.
+
+        Changing the error automatically changes the :attr:`variance`.
+        """
         return numpy.sqrt(self.variance)
 
     @error.setter
