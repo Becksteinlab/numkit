@@ -74,7 +74,7 @@ def linfit(x,y,dy=None):
         have_dy = False
 
     if not have_dy:
-        dy = numpy.ones((n),numpy.float)
+        dy = numpy.ones((n), numpy.float64)
 
     x  = numpy.asarray(x)
     y  = numpy.asarray(y)
