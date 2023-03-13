@@ -6,10 +6,10 @@ on:
     - cron: "33 3 * * 0"
   push:
     branches:
-      - "master"
+      - "main"
   pull_request:
     branches:
-      - "master"
+      - "main"
 
 concurrency:
   group: "${{ github.ref }}-${{ github.head_ref }}"
@@ -23,30 +23,34 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        python-version: [2.7, 3.6, 3.7, 3.8, 3.9]
+        python-version: ["2.7", "3.7", "3.8", "3.9", "3.10", "3.11"]
         exclude:
           - os: macOS-latest
-            python-version: 3.6
+            python-version: "3.7"
           - os: macOS-latest
-            python-version: 3.7
+            python-version: "3.8"           
           - os: macOS-latest
-            python-version: 3.9
+            python-version: "3.9"
+          - os: macOS-latest
+            python-version: "3.11"
           - os: windows-latest
-            python-version: 3.6
+            python-version: "3.7"
           - os: windows-latest
-            python-version: 3.7
+            python-version: "3.8"           
           - os: windows-latest
-            python-version: 3.9
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.11"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: Setup python
-      uses: actions/setup-python@v2
+    - name: Setup Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Display Python version
+    - name: Display Python version ${{ matrix.python-version }}
       run: python -c "import sys; print(sys.version)"
 
     - name: Install pytest, pytest plugins
@@ -69,7 +73,7 @@ jobs:
         pytest -v --cov=numkit --cov-report=xml --color=yes src/numkit/tests
 
     - name: Codecov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       with:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         file: ./coverage.xml
