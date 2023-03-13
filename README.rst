@@ -45,7 +45,7 @@ Contributions are very welcome in all forms, especially through issue
 reports and pull requests.
 
 
-.. |build| image:: https://github.com/Becksteinlab/numkit/actions/workflows/ci.yaml/badge.svg?branch=master
+.. |build| image:: https://github.com/Becksteinlab/numkit/actions/workflows/ci.yaml/badge.svg?branch=main
    :alt: Build status
    :target: https://github.com/Becksteinlab/numkit/actions/workflows/ci.yaml
    :scale: 100%
@@ -55,8 +55,8 @@ reports and pull requests.
    :alt: Documentation
    :scale: 100%
    
-.. |cov| image:: https://codecov.io/gh/Becksteinlab/numkit/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/Becksteinlab/numkit?branch=master
+.. |cov| image:: https://codecov.io/gh/Becksteinlab/numkit/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/Becksteinlab/numkit?branch=main
    :alt: Code Coverage
    :scale: 100%
 

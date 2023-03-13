@@ -2,6 +2,14 @@
  CHANGELOG for numkit
 ======================
 
+2023-03-13      1.2.3
+orbeckst
+
+* added support/testing for Python 3.10 and 3.11
+* dropped support/testing for Python 3.6
+* changed repository master -> main branch (#26)
+
+
 2021-09-01      1.2.2
 orbeckst, simonbray
 
