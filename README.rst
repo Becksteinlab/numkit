@@ -2,7 +2,7 @@
 numkit
 ======
 
-|docs| |build| |cov|
+|docs| |build| |cov| |anaconda|
 
 **numkit** is a small collection of numerical helper functions and
 classes ("numerical first aid kit") that have been useful for
@@ -60,3 +60,6 @@ reports and pull requests.
    :alt: Code Coverage
    :scale: 100%
 
+.. |anaconda| image:: https://anaconda.org/conda-forge/numkit/badges/version.svg
+   :target: https://anaconda.org/conda-forge/numkit
+   :alt: Anaconda package
