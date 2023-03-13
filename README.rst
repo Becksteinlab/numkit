@@ -21,9 +21,9 @@ Install with ``pip`` from PyPi with ::
 
     pip install numkit
 
-or with ``conda`` from the *bioconda* channel ::
+or with ``conda`` from the *conda-forge* channel ::
 
-   conda install -c conda-forge -c bioconda numkit
+   conda install -c conda-forge numkit
 
 The source code is available under the BSD 3-clause license (see file
 LICENSE) from GitHub in the repository

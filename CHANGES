@@ -2,12 +2,14 @@
  CHANGELOG for numkit
 ======================
 
-
 2021-09-01      1.2.2
 orbeckst, simonbray
 
 * conda package (created by @simonbray for bioconda) (#6)
 * documentation updates (#18, #19)
+
+NOTE: conda package available in conda-forge since 1.2.2
+      (maintained by @njzjz)
 
 
 2021-07-21      1.2.1
