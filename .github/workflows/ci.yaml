@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        python-version: ["2.7", "3.7", "3.8", "3.9", "3.10", "3.11"]
+        python-version: ["2.7", "3.7", "3.8", "3.9", "3.10", "3.11", "3.12"]
         exclude:
           - os: macOS-latest
             python-version: "3.7"
@@ -32,6 +32,8 @@ jobs:
           - os: macOS-latest
             python-version: "3.9"
           - os: macOS-latest
+            python-version: "3.10"          
+          - os: macOS-latest
             python-version: "3.11"
           - os: windows-latest
             python-version: "3.7"
@@ -39,6 +41,8 @@ jobs:
             python-version: "3.8"           
           - os: windows-latest
             python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.10"          
           - os: windows-latest
             python-version: "3.11"
 
@@ -76,5 +80,6 @@ jobs:
       uses: codecov/codecov-action@v3
       with:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml
         fail_ci_if_error: false
