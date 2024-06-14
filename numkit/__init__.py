@@ -37,5 +37,4 @@ __all__ = ['fitting', 'timeseries', 'integration', 'observables']
 class LowAccuracyWarning(Warning):
     """Warns that results may possibly have low accuracy."""
 
-from . import _version
-__version__ = _version.get_versions()['version']
+from ._version import __version__
