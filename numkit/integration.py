@@ -24,11 +24,6 @@ except ImportError:
 
 import logging
 logger = logging.getLogger("numkit.integration")
-# monkey patch old logger (warn is deprecated but warning does
-# not exist in 2.7) --- remove when we drop Python 2.7
-if not hasattr(logger, "warning"):
-    logger.warning = logger.warn
-
 
 def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.
@@ -52,7 +47,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
       *axis*
          axis in *dy* along which the data lies
       *even*
-         see :func:`scipy.integrate.simps` ('avg', 'first', 'last')
+         see :func:`scipy.integrate.simpson` ('avg', 'first', 'last')
 
     .. _Simpson's rule: http://mathworld.wolfram.com/SimpsonsRule.html
     .. _propagation of errors: http://mathworld.wolfram.com/ErrorPropagation.html
