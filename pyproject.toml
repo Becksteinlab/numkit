@@ -52,6 +52,7 @@ find = {}
 [tool.versioningit]
 
 [tool.versioningit.vcs]
+default-tag = "0.0.0"
 match = ["release-*"]
 
 [tool.versioningit.tag2version]
