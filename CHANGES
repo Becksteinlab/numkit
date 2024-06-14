@@ -8,7 +8,9 @@ orbeckst
 * added support/testing for Python 3.12
 * dropped support for Python 2.7 (ye served us well, RIP),
   and dropped support for Python 3.7 & 3.8
-
+* internal: switched to pyproject.toml and replaced versioneer with
+  versioningit: the tags that indicate releases were changed from
+  release-major.minor.patch to PEP440 compliant major.minor.release
 
 2023-03-13      1.2.3
 orbeckst

@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=42", "wheel", "versioningit"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "numkit"
+description = "numerical first aid kit"
+dynamic = ["version"]
+readme = "README.rst"
+license = { text = "BSD" }
+authors = [
+    { name = "Oliver Beckstein", email = "orbeckst@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+requires-python = ">=3.9"
+
+dependencies = [
+    "numpy>=1.9",
+    "scipy>=1.0",
+]
+
+
+[project.urls]
+homepage = "https://github.com/Becksteinlab/numkit"
+documentation = "https://numkit.readthedocs.org/"
+repository = "https://github.com/Becksteinlab/numkit"
+bug-tracker = "https://github.com/Becksteinlab/numkit/issues"
+
+
+[project.optional-dependencies]
+testing = ["pytest"]
+
+
+[tool.setuptools.packages]
+find = {}
+
+[tool.versioningit]
+
+[tool.versioningit.vcs]
+default-tag = "0.0.0"
+match = ["release-*"]
+
+[tool.versioningit.tag2version]
+rmprefix = "release-"
+
+[tool.versioningit.write]
+file = "numkit/_version.py"

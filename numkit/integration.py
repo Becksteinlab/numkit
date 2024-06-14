@@ -24,11 +24,6 @@ except ImportError:
 
 import logging
 logger = logging.getLogger("numkit.integration")
-# monkey patch old logger (warn is deprecated but warning does
-# not exist in 2.7) --- remove when we drop Python 2.7
-if not hasattr(logger, "warning"):
-    logger.warning = logger.warn
-
 
 def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.
@@ -52,7 +47,7 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
       *axis*
          axis in *dy* along which the data lies
       *even*
-         see :func:`scipy.integrate.simps` ('avg', 'first', 'last')
+         see :func:`scipy.integrate.simpson` ('avg', 'first', 'last')
 
     .. _Simpson's rule: http://mathworld.wolfram.com/SimpsonsRule.html
     .. _propagation of errors: http://mathworld.wolfram.com/ErrorPropagation.html
@@ -218,76 +213,3 @@ def _trapz_error2(dy,start,stop,x,dx,axis):
     else:
         raise NotImplementedError
     return result
-
-
-
-def _naive_simps_error2(dy,start,stop,x,dx,axis):
-    """Simple squared error on Simpson's rule integration.
-
-    The implementation assumes that the errors on the individual
-    intervals are independent and hence their squares can be
-    summed. This is wrong. DO NOT USE.
-
-    :Arguments:
-       *dy*
-          errors at function values
-       *start*, *stop*
-          first and last index at which a Simpson 3-point interval starts
-       *x*
-          abscissa values (provide if spacing not equal)
-       *dx*
-          constant spacing (is overridden by *dx*)
-       *axis*
-          axis in *dy* along which the data lie
-    """
-    import warnings
-    warnings.warn("The Simpson error from un-even intervals is not correct. _naive_simps_error2() will be removed.",
-                  category=DeprecationWarning)
-
-    nd = len(dy.shape)
-    if start is None:
-        start = 0
-    step = 2
-    all = (slice(None),)*nd
-    slice0 = tupleset(all, axis, slice(start, stop, step))
-    slice1 = tupleset(all, axis, slice(start+1, stop+1, step))
-    slice2 = tupleset(all, axis, slice(start+2, stop+2, step))
-
-    Df1 = dy[slice0]   # 2k
-    Df2 = dy[slice1]   # 2k-1
-    Df3 = dy[slice2]   # 2k-2
-
-    if x is None:  # Even spaced Simpson's rule.
-        # Simpson error propgation for points 0 <= i <= 2M
-        # error**2 = (h/3)**2 * sum_k=1^M dy[2k]**2 + (4*dy[2k-1])**2 + dy[2k-2]**2
-        # error**2 = (h/3)**2 * (Df1**2 + 4*Df2**2 + Df**2)
-        h = dx
-        result = numpy.add.reduce((h/3.0)**2 * (Df1**2+(4*Df2)**2+Df3**2), axis)
-    else:
-        # This is too naive: adds the squared errors for every individual Simpson-triplet but that misses
-        # the correlations in errors from the overlapping endpoints.
-
-        # for spacing h1 and h2 (evaluated in Sage from the integral of the Lagrange interpolating
-        # polynomials and propagation of errors)
-        # Z = h1**2 * h2 + h1 * h2**2
-        # error**2 = 1/(6*Z)**2 * ((2*h1**3*h2 + 3*h1**2*h2**2 - h2**4)**2*Df_1**2
-        #               + (h1**4 - 3*h1**2*h2**2 - 2*h1*h2**3)**2*Df_3**2
-        #               + (h1**4 + 4*h1**3*h2 + 6*h1**2*h2**2 + 4*h1*h2**3 + h2**4)**2*Df_2**2)
-        h1 = x[slice1] - x[slice0]  # check this!
-        h2 = x[slice2] - x[slice1]
-        #print 'h1', h1.shape, h1
-        #print 'h2', h2.shape, h2
-
-        Z = h1**2 * h2 + h1 * h2**2
-
-        #print 'Z ', Z
-        #print 'Df1 ', Df1
-        #print 'Df2 ', Df2
-        #print 'Df2 ', Df2
-
-        result = numpy.add.reduce(1/(6*Z)**2 *
-                                  (((2*h1**3*h2 + 3*h1**2*h2**2 - h2**4) * Df1)**2 \
-                                       + ((h1**4 + 4*h1**3*h2 + 6*h1**2*h2**2 + 4*h1*h2**3 + h2**4) * Df2)**2 \
-                                       + ((h1**4 - 3*h1**2*h2**2 - 2*h1*h2**3) * Df3)**2))
-    return result
-

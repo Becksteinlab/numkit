@@ -39,7 +39,10 @@ jobs:
             python-version: "3.11"
 
     steps:
-    - uses: actions/checkout@v3
+    - name: git checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-tags: true
 
     - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -66,7 +69,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -v --cov=numkit --cov-report=xml --color=yes src/numkit/tests
+        pytest -v --cov=numkit --cov-report=xml --color=yes numkit/tests
 
     - name: Codecov
       uses: codecov/codecov-action@v3

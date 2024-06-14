@@ -2,10 +2,6 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
-from __future__ import absolute_import, division
-
-from six.moves import zip as izip
-
 import numpy
 import scipy.signal
 import scipy.integrate
@@ -15,10 +11,6 @@ import warnings
 
 import logging
 logger = logging.getLogger("numkit.timeseries")
-# monkey patch old logger (warn is deprecated but warning does
-# not exist in 2.7) --- remove when we drop Python 2.7
-if not hasattr(logger, "warning"):
-    logger.warning = logger.warn
 
 from numkit import LowAccuracyWarning
 
@@ -158,7 +150,7 @@ def tcorrel(x, y, nstep=100, debug=False):
     t0 = _x[i0]
     # integral of the _normalized_ acf
     norm = acf[0] or 1.0  # guard against a zero ACF
-    tc = scipy.integrate.simps(acf[:i0]/norm, x=_x[:i0])
+    tc = scipy.integrate.simpson(acf[:i0]/norm, x=_x[:i0])
     # error estimate for the mean [Frenkel & Smit, p526]
     sigma = numpy.sqrt(2*tc*acf[0]/(x[-1] - x[0]))
 
@@ -394,11 +386,11 @@ def circmean_histogrammed_function(t, y, **kwargs):
     Returns the circmean-regularised function *F* and the centers of
     the bins.
 
-    *kwargs* are passed to :func:`scipy.stats.morestats.circmean`, in
+    *kwargs* are passed to :func:`scipy.stats.circmean`, in
     particular set the lower bound with *low* and the upper one with
     *high*. The default is [-pi, +pi].
 
-    :func:`regularized_function` with *func* = :func:`scipy.stats.morestats.circmean`
+    :func:`regularized_function` with *func* = :func:`scipy.stats.circmean`
 
     .. Note:: Data are interpreted as angles in radians.
     """
@@ -407,7 +399,7 @@ def circmean_histogrammed_function(t, y, **kwargs):
     def _circmean(a, low=low, high=high):
         if len(a) == 0:
             return numpy.NAN
-        return scipy.stats.morestats.circmean(a, low=low, high=high)
+        return scipy.stats.circmean(a, low=low, high=high)
     return apply_histogrammed_function(_circmean, t, y, **kwargs)
 
 def circstd_histogrammed_function(t, y, **kwargs):
@@ -416,11 +408,11 @@ def circstd_histogrammed_function(t, y, **kwargs):
     Returns the circstd-regularised function *F* and the centers of
     the bins.
 
-    *kwargs* are passed to :func:`scipy.stats.morestats.circmean`, in
+    *kwargs* are passed to :func:`scipy.stats.circmean`, in
     particular set the lower bound with *low* and the upper one with
     *high*. The default is [-pi, +pi].
 
-    :func:`regularized_function` with *func* = :func:`scipy.stats.morestats.circstd`
+    :func:`regularized_function` with *func* = :func:`scipy.stats.circstd`
 
     .. Note:: Data are interpreted as angles in radians.
     """
@@ -429,7 +421,7 @@ def circstd_histogrammed_function(t, y, **kwargs):
     def _circstd(a, low=low, high=high):
         if len(a) == 0:
             return numpy.NAN
-        return scipy.stats.morestats.circstd(a, low=low, high=high)
+        return scipy.stats.circstd(a, low=low, high=high)
     return apply_histogrammed_function(_circstd, t, y, **kwargs)
 
 def apply_histogrammed_function(func, t, y, **kwargs):
@@ -523,5 +515,5 @@ def regularized_function(x, y, func, bins=100, range=None):
     # general way to combine the chunks for different blocks, just think of
     # func=median
     F = numpy.zeros(len(bins)-1)  # final function
-    F[:] = [func(sy[start:stop]) for start,stop in izip(bin_index[:-1],bin_index[1:])]
+    F[:] = [func(sy[start:stop]) for start,stop in zip(bin_index[:-1],bin_index[1:])]
     return F,bins
