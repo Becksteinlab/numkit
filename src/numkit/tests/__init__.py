@@ -46,18 +46,11 @@ The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
 
 
-.. _nose: 
+.. _nose:
    http://somethingaboutorange.com/mrl/projects/nose/0.11.3/index.html
 .. _nose commandline options:
    http://somethingaboutorange.com/mrl/projects/nose/0.11.3/usage.html#extended-usage
-.. _SciPy testing guidelines: 
+.. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 """
-
-try:
-    from numpy.testing import Tester
-    test = Tester().test
-except ImportError:
-    raise ImportError("""numpy>=1.3  is required to run the test suite. Please install it first. """
-                      """(For example, try "easy_install 'numpy>=1.3'").""")
 
