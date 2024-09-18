@@ -2,10 +2,11 @@
  CHANGELOG for numkit
 ======================
 
-2024-09-??      1.3.1
-hsk17
+2024-09-18      1.3.1
+hsk17, orbeckst
 
 * numpy.NAN dropped in numpy-2, use numpy.nan (#32)
+* modernized deployment (PR #33)
 
 2024-06-13      1.3.0
 orbeckst
