@@ -53,7 +53,7 @@ copyright = f"2009-{now.year}, The Authors of numkit (see AUTHORS)"
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
 #
-# Dynamically calculate the version (uses versioneer)
+# Dynamically calculate the version (from versioningit-generated _version.py)
 packageversion = __import__("numkit").__version__
 
 # The short X.Y version.

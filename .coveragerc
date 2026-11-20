@@ -15,7 +15,7 @@ exclude_lines =
     if __name__ == .__main__.:
 
 omit =
-    src/numkit/tests/*
-    # omit the versioneer-installed _version.py
-    src/numkit/_version.py
+    numkit/tests/*
+    # omit the versioningit-generated _version.py
+    numkit/_version.py
 
