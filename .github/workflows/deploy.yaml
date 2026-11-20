@@ -71,12 +71,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout repository for test files
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          fetch-tags: true
-
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
@@ -100,7 +94,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest --verbose numkit/tests
+          pytest --verbose --pyargs numkit
 
   deploy-testpypi:
     name: Deploy to TestPyPI
@@ -184,10 +178,12 @@ jobs:
 
       - name: Test import
         run: |
+          cd ~
           python -c "import numkit; print(f'Package {numkit.__version__} imported successfully from TestPyPI')"
 
       - name: Run tests
         run: |
+          cd ~
           pytest -v --pyargs numkit
 
   test-deployed-pypi:
@@ -224,8 +220,10 @@ jobs:
 
       - name: Test import
         run: |
+          cd ~
           python -c "import numkit; print(f'Package {numkit.__version__} imported successfully from PyPI')"
 
       - name: Run tests
         run: |
+          cd ~
           pytest -v --pyargs numkit
