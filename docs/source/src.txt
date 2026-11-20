@@ -27,6 +27,15 @@ Contributing
 Contributions in the form of `feedback, bug reports, suggestions`_ and
 pull requests are very welcome.
 
+Code style is checked with Ruff_ for both linting and formatting.
+Please run ::
+
+  ruff check numkit
+  ruff format numkit
+
+before opening a pull request.
+
 
 .. _numkit git repository: https://github.com/Becksteinlab/numkit
 .. _feedback, bug reports, suggestions: http://github.com/Becksteinlab/numkit/issues
+.. _Ruff: https://docs.astral.sh/ruff/

@@ -1,0 +1,32 @@
+name: Ruff
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+
+concurrency:
+  group: "ruff-${{ github.ref }}-${{ github.head_ref }}"
+  cancel-in-progress: true
+
+jobs:
+  ruff:
+    name: Lint and format
+    runs-on: ubuntu-latest
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v7
+
+      - name: Run ruff check
+        uses: astral-sh/ruff-action@v4.1.0
+        with:
+          src: "./numkit"
+
+      - name: Run ruff format
+        uses: astral-sh/ruff-action@v4.1.0
+        with:
+          args: "format --check"
+          src: "./numkit"
