@@ -22,10 +22,13 @@ except ImportError:
         l[i] = value
         return tuple(l)
 
+
 import logging
+
 logger = logging.getLogger("numkit.integration")
 
-def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
+
+def simps_error(dy, x=None, dx=1, axis=-1, even="avg"):
     """Error on integral evaluated with `Simpson's rule`_ from errors of points, *dy*.
 
     Evaluate the integral with :func:`scipy.integrate.simps`. For a
@@ -66,40 +69,39 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             shapex[axis] = x.shape[0]
             saveshape = x.shape
             returnshape = True
-            x=x.reshape(tuple(shapex))
+            x = x.reshape(tuple(shapex))
         elif len(x.shape) != len(dy.shape):
-            raise ValueError("If given, shape of x must be 1-d or the "
-                  "same as dy.")
+            raise ValueError("If given, shape of x must be 1-d or the same as dy.")
         if x.shape[axis] != N:
-            raise ValueError("If given, length of x along axis must be the " \
-                  "same as dy.")
+            raise ValueError("If given, length of x along axis must be the same as dy.")
     else:
         last_dx = first_dx = dx
         avglast_dx = avgfirst_dx = dx
         returnshape = False
 
     if N % 2 == 0:
-        val = 0.0      # holds trapezoidal error**2
-        result = 0.0   # holds Simpson error**2
+        val = 0.0  # holds trapezoidal error**2
+        result = 0.0  # holds Simpson error**2
         correction = 0.0  # overlap correction for combining trapz and Simpson
-        slice1 = (slice(None),)*nd
-        slice2 = (slice(None),)*nd
-        if not even in ['avg', 'last', 'first']:
-            raise ValueError(
-                  "Parameter 'even' must be 'avg', 'last', or 'first'.")
-        if even in ['avg', 'first']:
+        slice1 = (slice(None),) * nd
+        slice2 = (slice(None),) * nd
+        if not even in ["avg", "last", "first"]:
+            raise ValueError("Parameter 'even' must be 'avg', 'last', or 'first'.")
+        if even in ["avg", "first"]:
             # Compute using Simpson's rule on first intervals
             slice0 = tupleset(slice1, axis, -3)
             slice1 = tupleset(slice1, axis, -2)
             slice2 = tupleset(slice2, axis, -1)
             if x is not None:
-                last_dx =   x[slice2] - x[slice1]
+                last_dx = x[slice2] - x[slice1]
                 penult_dx = x[slice1] - x[slice0]
-                avglast_dx = 0.5*(penult_dx + last_dx)
+                avglast_dx = 0.5 * (penult_dx + last_dx)
             val += _trapz_2pt_error2(dy[slice1], dy[slice2], last_dx)
-            result += _simps_error2(dy,0,N-3,x,dx,axis)
-            correction += _trapz_simps_overlap2(dy[slice1], avglast_dx)  # avglast_dx not strictly correct for x!=None!
-        if even in ['avg', 'last']:
+            result += _simps_error2(dy, 0, N - 3, x, dx, axis)
+            correction += _trapz_simps_overlap2(
+                dy[slice1], avglast_dx
+            )  # avglast_dx not strictly correct for x!=None!
+        if even in ["avg", "last"]:
             # Compute using Simpson's rule on last set of intervals
             slice1 = tupleset(slice1, axis, 0)
             slice2 = tupleset(slice2, axis, 1)
@@ -107,11 +109,13 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             if x is not None:
                 first_dx = x[slice2] - x[slice1]
                 second_dx = x[slice3] - x[slice2]
-                avgfirst_dx = 0.5*(second_dx + first_dx)
+                avgfirst_dx = 0.5 * (second_dx + first_dx)
             val += _trapz_2pt_error2(dy[slice1], dy[slice2], first_dx)
-            result += _simps_error2(dy,1,N-2,x,dx,axis)
-            correction += _trapz_simps_overlap2(dy[slice2], avgfirst_dx)  # avgfirst_dx not strictly correct for x!=None!
-        if even == 'avg':
+            result += _simps_error2(dy, 1, N - 2, x, dx, axis)
+            correction += _trapz_simps_overlap2(
+                dy[slice2], avgfirst_dx
+            )  # avgfirst_dx not strictly correct for x!=None!
+        if even == "avg":
             # simply average the variances of 'odd' and 'even' because the two
             # data sets are not independent; hence it would be wrong to
             # estimate it as  avg**2 = 0.5*sqrt(da1**2+da2**2)
@@ -120,10 +124,11 @@ def simps_error(dy, x=None, dx=1, axis=-1, even='avg'):
             correction /= 2.0
         result = result + val + correction  # err_simps**2 + err_trapez**2 + correction
     else:
-        result = _simps_error2(dy,0,N-2,x,dx,axis)
+        result = _simps_error2(dy, 0, N - 2, x, dx, axis)
     if returnshape:
         x = x.reshape(saveshape)
     return numpy.sqrt(result)
+
 
 def _trapz_simps_overlap2(dy, dx):
     """Correction term in the squared error when combining trapezoidal and Simpson's rule.
@@ -135,9 +140,10 @@ def _trapz_simps_overlap2(dy, dx):
 
     (3+2)^2 = 3^2 + 2^2 + 12    <--- 12 is the "overlap" correction
     """
-    return (dx/6)**2 * 12 * dy**2
+    return (dx / 6) ** 2 * 12 * dy**2
 
-def _simps_error2(dy,start,stop,x,dx,axis):
+
+def _simps_error2(dy, start, stop, x, dx, axis):
     """Squared error on Simpson's rule integration.
 
     :Arguments:
@@ -156,17 +162,19 @@ def _simps_error2(dy,start,stop,x,dx,axis):
     if start is None:
         start = 0
     step = 2
-    all = (slice(None),)*nd
+    all = (slice(None),) * nd
     # check that stop is appropriate !!!
-    slice2k  = tupleset(all, axis, slice(start, stop, step))     # does NOT include last point stop+1
-    slice2k1 = tupleset(all, axis, slice(start+1, stop+1, step))
-    slice0   = tupleset(all, axis, slice(start, start+1))          # first point
-    sliceN   = tupleset(all, axis, slice(stop+1, stop+2))          # last point
+    slice2k = tupleset(
+        all, axis, slice(start, stop, step)
+    )  # does NOT include last point stop+1
+    slice2k1 = tupleset(all, axis, slice(start + 1, stop + 1, step))
+    slice0 = tupleset(all, axis, slice(start, start + 1))  # first point
+    sliceN = tupleset(all, axis, slice(stop + 1, stop + 2))  # last point
 
-    Df2k  = dy[slice2k]    # 2k
-    Df2k1 = dy[slice2k1]   # 2k+1
-    Df0   = dy[slice0]     # first = 0
-    DfN   = dy[sliceN]     # last = N
+    Df2k = dy[slice2k]  # 2k
+    Df2k1 = dy[slice2k1]  # 2k+1
+    Df0 = dy[slice0]  # first = 0
+    DfN = dy[sliceN]  # last = N
 
     if x is None:  # Even spaced Simpson's rule.
         # Simpson error propagation for I = (h/3)*(f_1 + 4f_2 + 2f_3 + 4f_4 + ... + 4f_{N-1} + f_N)
@@ -177,39 +185,47 @@ def _simps_error2(dy,start,stop,x,dx,axis):
         # In order to work with nd-arrays I need to get the axis of  '- 3*Df0**2 + DfN**2'
         # but my numpy-foo is weak and I don't know how to extract this axis nicely: Hence
         # sum the single term with the axis argument :-(
-        result = (dx/3.0)**2 * (numpy.add.reduce(((2*Df2k)**2 + (4*Df2k1)**2), axis) \
-                                    + numpy.add.reduce(-3*Df0**2 + DfN**2, axis))
+        result = (dx / 3.0) ** 2 * (
+            numpy.add.reduce(((2 * Df2k) ** 2 + (4 * Df2k1) ** 2), axis)
+            + numpy.add.reduce(-3 * Df0**2 + DfN**2, axis)
+        )
     else:
-        logger.warning("Approximating Simpson integration statistical error with the average spacing.")
+        logger.warning(
+            "Approximating Simpson integration statistical error with the average spacing."
+        )
         dx = numpy.diff(x).mean()
-        result = _simps_error2(dy,start,stop,None,dx,axis)
+        result = _simps_error2(dy, start, stop, None, dx, axis)
 
     return result
+
 
 def _trapz_2pt_error2(dy1, dy2, dx):
     """Squared error on the trapezoidal rule for two points.
 
     For errors dy1 and dy2 and spacing dx."""
-    return (0.5*dx)**2 * (dy1**2 + dy2**2)
+    return (0.5 * dx) ** 2 * (dy1**2 + dy2**2)
 
-def _trapz_error2(dy,start,stop,x,dx,axis):
+
+def _trapz_error2(dy, start, stop, x, dx, axis):
     # not tested
     nd = len(dy.shape)
     if start is None:
         start = 0
     step = 1
-    all = (slice(None),)*nd
-    slicek   = tupleset(all, axis, slice(start, stop+2, step))     # all points; stop+2 ??
-    slice0   = tupleset(all, axis, slice(start, start+1))          # first point
-    sliceN   = tupleset(all, axis, slice(stop+1, stop+2))          # last point
+    all = (slice(None),) * nd
+    slicek = tupleset(all, axis, slice(start, stop + 2, step))  # all points; stop+2 ??
+    slice0 = tupleset(all, axis, slice(start, start + 1))  # first point
+    sliceN = tupleset(all, axis, slice(stop + 1, stop + 2))  # last point
 
-    Dfk  = dy[slicek]    # 2k
-    Df0   = dy[slice0]     # first = 0
-    DfN   = dy[sliceN]     # last = N
+    Dfk = dy[slicek]  # 2k
+    Df0 = dy[slice0]  # first = 0
+    DfN = dy[sliceN]  # last = N
 
     if x is None:
         # from error propagation of I = (h/2) * (f_1 + 2f_2 + 2f_3 + ... + 2f_{N-1) + f_N)
-        result = (0.5*dx)**2 * (4 * numpy.add.reduce(Dfk**2, axis) - 3*(Df0**2 + DfN**2))
+        result = (0.5 * dx) ** 2 * (
+            4 * numpy.add.reduce(Dfk**2, axis) - 3 * (Df0**2 + DfN**2)
+        )
     else:
         raise NotImplementedError
     return result

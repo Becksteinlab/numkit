@@ -5,6 +5,7 @@ from __future__ import division
 
 import numpy
 
+
 class QID(frozenset):
     """Identity of a :class:`QuantityWithError`.
 
@@ -25,16 +26,20 @@ class QID(frozenset):
     the terms of the expression. In a certain sense, the "history" of
     a quantity becomes its "identity".
     """
+
     def __new__(cls, iterable=None):
         if iterable is None:
-            self = None #super(QID,cls).__new__(cls)
+            self = None  # super(QID,cls).__new__(cls)
         else:
-            self = super(QID,cls).__new__(cls, asiterable(iterable))
+            self = super(QID, cls).__new__(cls, asiterable(iterable))
         return self
+
     def union(self, x):
         return super(QID, self).union(asiterable(x))  # hack...
+
     def __repr__(self):
         return "QID({0!r})".format(list(self))
+
 
 class QuantityWithError(object):
     """Number with error and basic error propagation arithmetic.
@@ -53,6 +58,7 @@ class QuantityWithError(object):
     .. _error propagation: http://mathworld.wolfram.com/ErrorPropagation.html
 
     """
+
     # A quantity has a unique id which is conserved through operations with
     # itself. "Sameness" of two quantities is tested on this id with
     # :meth:`QuantityWithError.isSame`.
@@ -70,13 +76,13 @@ class QuantityWithError(object):
     # TODO: Add qid-conservation to special case "self"-operations.
     def __init__(self, value, error=None, qid=None, **kwargs):
         # value can be another QuantityWithError instance
-        val,err,otherqid = self._astuple(value)  # use data of other instances
+        val, err, otherqid = self._astuple(value)  # use data of other instances
         if not error is None:
-            pass            # kwargs take precedence over any other error
+            pass  # kwargs take precedence over any other error
         elif err != 0:
-            error = err     # get from other instance
+            error = err  # get from other instance
         else:
-            error = 0       # default for a quantity WITHOUT error
+            error = 0  # default for a quantity WITHOUT error
         self.value = val
         self.variance = error**2
 
@@ -87,17 +93,17 @@ class QuantityWithError(object):
         #   unique qids ("identity is their history")
         # - qid is implemented as a frozenset
 
-        _qid = set()           # identity accumulates in qid, i.e. flattened history
+        _qid = set()  # identity accumulates in qid, i.e. flattened history
         qid = qid or otherqid  # kwargs qid takes precedence; otherqid is likely None
         if qid is None and error != 0:  # generate qid for quantities WITH error
-            qid = id(self)              # unique new id
+            qid = id(self)  # unique new id
         _qid.update([q for q in asiterable(qid) if q is not None])
-        self.qid = QID(_qid)       # freeze so that we can use it as a key
+        self.qid = QID(_qid)  # freeze so that we can use it as a key
         del _qid
 
         # TODO: covariance will need to be updated from other
-        self.covariance = {self.qid: self.variance} # record covariances with other
-        self.confidence = kwargs.pop('confidence', 0.99)   # for comparisons/not used yet
+        self.covariance = {self.qid: self.variance}  # record covariances with other
+        self.confidence = kwargs.pop("confidence", 0.99)  # for comparisons/not used yet
 
     @property
     def error(self):
@@ -113,7 +119,7 @@ class QuantityWithError(object):
 
     @error.setter
     def error(self, x):
-        self.variance = x*x
+        self.variance = x * x
 
     def isSame(self, other):
         """Check if *other* is 100% correlated with *self*.
@@ -151,7 +157,7 @@ class QuantityWithError(object):
         return False
 
     def _dist(self, x, y):
-        return numpy.sqrt(x*x + y*y)
+        return numpy.sqrt(x * x + y * y)
 
     @staticmethod
     def asQuantityWithError(other):
@@ -190,69 +196,89 @@ class QuantityWithError(object):
 
     def __add__(self, other):
         """x.__add__(y)  <-->  x + y"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
-            return QuantityWithError(self.value + val, numpy.abs(self.error+err), qid=self.qid)
-        return QuantityWithError(self.value + val, self._dist(self.error, err), qid=self.qid.union(qid))
+            return QuantityWithError(
+                self.value + val, numpy.abs(self.error + err), qid=self.qid
+            )
+        return QuantityWithError(
+            self.value + val, self._dist(self.error, err), qid=self.qid.union(qid)
+        )
 
     def __radd__(self, other):
         """x.__radd__(y)  <-->  y + x"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
-            return QuantityWithError(self.value + val, numpy.abs(self.error+err), qid=self.qid)
-        return QuantityWithError(val + self.value, self._dist(self.error, err), qid=self.qid.union(qid))
+            return QuantityWithError(
+                self.value + val, numpy.abs(self.error + err), qid=self.qid
+            )
+        return QuantityWithError(
+            val + self.value, self._dist(self.error, err), qid=self.qid.union(qid)
+        )
 
     def __sub__(self, other):
         """x.__sub__(y)  <-->  x - y"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # error should come out as 0 for a-a
-            return QuantityWithError(self.value - val, numpy.abs(self.error-err), qid=self.qid)
-        return QuantityWithError(self.value - val, self._dist(self.error, err), qid=self.qid.union(qid))
+            return QuantityWithError(
+                self.value - val, numpy.abs(self.error - err), qid=self.qid
+            )
+        return QuantityWithError(
+            self.value - val, self._dist(self.error, err), qid=self.qid.union(qid)
+        )
 
     def __rsub__(self, other):
         """x.__rsub__(y)  <-->  y - x"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # error should come out as 0 for a-a
-            return QuantityWithError(val - self.value, numpy.abs(self.error-err), qid=self.qid)
-        return QuantityWithError(val - self.value, self._dist(self.error, err), qid=self.qid.union(qid))
+            return QuantityWithError(
+                val - self.value, numpy.abs(self.error - err), qid=self.qid
+            )
+        return QuantityWithError(
+            val - self.value, self._dist(self.error, err), qid=self.qid.union(qid)
+        )
 
     def __mul__(self, other):
         """x.__mul__(y)  <-->  x * y"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # TODO: error not correct in the general case (?)
-            return QuantityWithError(self.value * val, numpy.abs(self.error*err), qid=self.qid)
-        error = self._dist(val*self.error, err*self.value)
+            return QuantityWithError(
+                self.value * val, numpy.abs(self.error * err), qid=self.qid
+            )
+        error = self._dist(val * self.error, err * self.value)
         return QuantityWithError(self.value * val, error=error, qid=self.qid.union(qid))
 
     def __rmul__(self, other):
         """x.__rmul__(y)  <-->  y * x"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # TODO: error not correct in the general case (?)
-            return QuantityWithError(val * self.value, numpy.abs(self.error*err), qid=self.qid)
-        error = self._dist(val*self.error, err*self.value)
+            return QuantityWithError(
+                val * self.value, numpy.abs(self.error * err), qid=self.qid
+            )
+        error = self._dist(val * self.error, err * self.value)
         return QuantityWithError(val * self.value, error=error, qid=self.qid.union(qid))
 
     def __truediv__(self, other):
         """x.__div__(y)  <-->  x / y"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # TODO: error not correct in the general case
-            return QuantityWithError(self.value/val, 0, qid=self.qid)
-        error = self._dist(self.error/val, err*self.value/val**2)
-        return QuantityWithError(self.value/val, error=error, qid=self.qid.union(qid))
+            return QuantityWithError(self.value / val, 0, qid=self.qid)
+        error = self._dist(self.error / val, err * self.value / val**2)
+        return QuantityWithError(self.value / val, error=error, qid=self.qid.union(qid))
 
     def __rtruediv__(self, other):
         """x.__rdiv__(y)  <-->  y / x"""
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         if self.isSame(other):
             # TODO: error not correct in the general case
-            return QuantityWithError(val/self.value, 0, qid=self.qid)
-        error = self._dist(err/self.value, self.error*val/self.value**2)
-        return QuantityWithError(val/self.value, error=error, qid=self.qid.union(qid))
+            return QuantityWithError(val / self.value, 0, qid=self.qid)
+        error = self._dist(err / self.value, self.error * val / self.value**2)
+        return QuantityWithError(val / self.value, error=error, qid=self.qid.union(qid))
 
     # Python 2 compatible
     __div__ = __truediv__
@@ -265,34 +291,38 @@ class QuantityWithError(object):
     def __pow__(self, other, z=None):
         """x.__pow__(y)  <-->  x**y"""
         if not z is None:
-            raise NotImplementedError("only pow(self, y) implemented, not pow(self,y,z)")
-        x,dx = self.value, self.error
-        y,dy,yqid = self._astuple(other)
+            raise NotImplementedError(
+                "only pow(self, y) implemented, not pow(self,y,z)"
+            )
+        x, dx = self.value, self.error
+        y, dy, yqid = self._astuple(other)
         if self.isSame(other):
             # not sure if error correct for a**a**a ...
             f = numpy.power(x, y)
-            error = numpy.abs(dx*f*(1+numpy.log(x)))
+            error = numpy.abs(dx * f * (1 + numpy.log(x)))
             qid = self.qid
         else:
-            f = numpy.power(x,y)
-            error = self._dist(dx*f*y/x, dy*f*numpy.log(x))
+            f = numpy.power(x, y)
+            error = self._dist(dx * f * y / x, dy * f * numpy.log(x))
             qid = [self.qid, yqid]
         return QuantityWithError(f, error, qid=qid)
 
     def __rpow__(self, other, z=None):
         """x.__rpow__(y)  <-->  y**x"""
         if not z is None:
-            raise NotImplementedError("only rpow(self, y) implemented, not rpow(self,y,z)")
-        x,dx = self.value, self.error
-        y,dy,yqid = self._astuple(other)
+            raise NotImplementedError(
+                "only rpow(self, y) implemented, not rpow(self,y,z)"
+            )
+        x, dx = self.value, self.error
+        y, dy, yqid = self._astuple(other)
         if self.isSame(other):
             # not sure if error correct for a**a**a ...
             f = numpy.power(y, x)
-            error = numpy.abs(dy*f*(1+numpy.log(y)))
+            error = numpy.abs(dy * f * (1 + numpy.log(y)))
             qid = self.qid
         else:
             f = numpy.power(y, x)
-            error = self._dist(dy*f*x/y, dx*f*numpy.log(y))
+            error = self._dist(dy * f * x / y, dx * f * numpy.log(y))
             qid = [self.qid, yqid]
         return QuantityWithError(f, error, qid=qid)
 
@@ -303,26 +333,26 @@ class QuantityWithError(object):
     def __cmp__(self, other):
         """x.__cmp__(other) <==> cmp(x.value,other.value)"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         result = cmp(self.value, val)
         return result
 
     def __eq__(self, other):
         """x.__eq__(other) <==> x.value == other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         return self.value == val
 
     def __lt__(self, other):
         """x.__lt__(other) <==> x.value < other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         return self.value < val
 
     def __le__(self, other):
         """x.__le__(other) <==> x.value <= other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val,err,qid = self._astuple(other)
+        val, err, qid = self._astuple(other)
         return self.value <= val
 
     def __ge__(self, other):
@@ -342,21 +372,24 @@ class QuantityWithError(object):
 
     def deepcopy(self):
         """Create an exact copy with the same identity."""
-        return QuantityWithError(self.value, self.error, qid=self.qid, confidence=self.confidence)
+        return QuantityWithError(
+            self.value, self.error, qid=self.qid, confidence=self.confidence
+        )
 
 
 def iterable(obj):
     """Returns ``True`` if *obj* can be iterated over and is *not* a  string."""
     if type(obj) is str:
-        return False    # avoid iterating over characters of a string
+        return False  # avoid iterating over characters of a string
 
-    if hasattr(obj, 'next'):
-        return True    # any iterator will do
+    if hasattr(obj, "next"):
+        return True  # any iterator will do
     try:
-        len(obj)       # anything else that might work
+        len(obj)  # anything else that might work
     except TypeError:
         return False
     return True
+
 
 def asiterable(obj):
     """Returns obj so that it can be iterated over; a string is *not* treated as iterable"""

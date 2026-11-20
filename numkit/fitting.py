@@ -4,10 +4,11 @@
 
 import numpy
 import logging
+
 logger = logging.getLogger("numkit.fitting")
 
 
-def Pearson_r(x,y):
+def Pearson_r(x, y):
     """Pearson's r (correlation coefficient).
 
        Pearson(x,y) --> correlation coefficient
@@ -20,9 +21,10 @@ def Pearson_r(x,y):
       covxy = numpy.sum((x-Ex)*(y-Ey))
       r = covxy/math.sqrt(numpy.sum((x-Ex)**2)*numpy.sum((y-Ey)**2))
     """
-    return numpy.corrcoef(x,y)[1,0]
+    return numpy.corrcoef(x, y)[1, 0]
 
-def linfit(x,y,dy=None):
+
+def linfit(x, y, dy=None):
     """Fit a straight line y = a + bx to the data in *x* and *y*.
 
     Errors on y should be provided in dy in order to assess the
@@ -69,49 +71,55 @@ def linfit(x,y,dy=None):
         raise ValueError("lengths of x and y must match: {0!s} != {1!s}".format(n, m))
 
     try:
-        have_dy = (len(dy) > 0)
+        have_dy = len(dy) > 0
     except TypeError:
         have_dy = False
 
     if not have_dy:
         dy = numpy.ones((n), numpy.float64)
 
-    x  = numpy.asarray(x)
-    y  = numpy.asarray(y)
+    x = numpy.asarray(x)
+    y = numpy.asarray(y)
     dy = numpy.asarray(dy)
 
-    s2  = dy*dy
-    S   = numpy.add.reduce(1/s2)
-    Sx  = numpy.add.reduce(x/s2)
-    Sy  = numpy.add.reduce(y/s2)
-    Sxx = numpy.add.reduce(x*x/s2)
-    Sxy = numpy.add.reduce(x*y/s2)
+    s2 = dy * dy
+    S = numpy.add.reduce(1 / s2)
+    Sx = numpy.add.reduce(x / s2)
+    Sy = numpy.add.reduce(y / s2)
+    Sxx = numpy.add.reduce(x * x / s2)
+    Sxy = numpy.add.reduce(x * y / s2)
 
-    t   = (x - Sx/S)/dy
-    Stt = numpy.add.reduce(t*t)
+    t = (x - Sx / S) / dy
+    Stt = numpy.add.reduce(t * t)
 
-    b = numpy.add.reduce(t*y/dy)/Stt
-    a = (Sy - Sx*b)/S
+    b = numpy.add.reduce(t * y / dy) / Stt
+    a = (Sy - Sx * b) / S
 
-    sa = numpy.sqrt((1 + (Sx*Sx)/(S*Stt))/S)
-    sb = numpy.sqrt(1/Stt)
+    sa = numpy.sqrt((1 + (Sx * Sx) / (S * Stt)) / S)
+    sb = numpy.sqrt(1 / Stt)
 
-    covab = -Sx/(S*Stt)
-    r = covab/(sa*sb)
+    covab = -Sx / (S * Stt)
+    r = covab / (sa * sb)
 
-    chi2 = numpy.add.reduce(((y-a-b*x)/dy)**2)
+    chi2 = numpy.add.reduce(((y - a - b * x) / dy) ** 2)
     if not have_dy:
         # estimate error if none were provided
-        sigmadata = numpy.sqrt(chi2/(n-2))
+        sigmadata = numpy.sqrt(chi2 / (n - 2))
         sa *= sigmadata
         sb *= sigmadata
         Q = 1.0
     else:
-        Q = scipy.stats.distributions.chi2.sf(chi2, n-2)
+        Q = scipy.stats.distributions.chi2.sf(chi2, n - 2)
 
-    return {"intercept":a,"slope":b,
-            "sigma_intercept":sa,"sigma_slope":sb,
-            "parameter_correlation":r, "chi_square":chi2, "Q":Q}
+    return {
+        "intercept": a,
+        "slope": b,
+        "sigma_intercept": sa,
+        "sigma_slope": sb,
+        "parameter_correlation": r,
+        "chi_square": chi2,
+        "Q": Q,
+    }
 
 
 class FitFunc(object):
@@ -135,19 +143,26 @@ class FitFunc(object):
     1D-numpy array) with :meth:`FitFunc.fit`.
 
     """
-    def __init__(self,x,y,parameters=None):
+
+    def __init__(self, x, y, parameters=None):
         import scipy.optimize
+
         _x = numpy.asarray(x)
         _y = numpy.asarray(y)
         p0 = self._get_initial_values(parameters)
         fitfunc = self.f_factory()
-        def errfunc(p,x,y):
-            return  fitfunc(p,x) - y     # residuals
-        p,msg = scipy.optimize.leastsq(errfunc,p0[:],args=(_x,_y))
+
+        def errfunc(p, x, y):
+            return fitfunc(p, x) - y  # residuals
+
+        p, msg = scipy.optimize.leastsq(errfunc, p0[:], args=(_x, _y))
         try:
             p[0]
             self.parameters = p
-        except (TypeError,IndexError,):
+        except (
+            TypeError,
+            IndexError,
+        ):
             # TypeError for int p, IndexError for numpy scalar (new scipy)
             self.parameters = [p]
         self.message = msg
@@ -156,9 +171,13 @@ class FitFunc(object):
         """Stub for fit function factory, which returns the fit function.
         Override for derived classes.
         """
-        def fitfunc(p,x):
+
+        def fitfunc(p, x):
             # return f(p,x); should be a numpy ufunc
-            raise NotImplementedError("base class must be extended for each fit function")
+            raise NotImplementedError(
+                "base class must be extended for each fit function"
+            )
+
         return fitfunc
 
     def _get_initial_values(self, parameters=None):
@@ -167,7 +186,11 @@ class FitFunc(object):
             try:
                 p0[:] = parameters
             except ValueError:
-                raise ValueError("Wrong number of custom initital values {0!r}, should be something like {1!r}".format(parameters, p0))
+                raise ValueError(
+                    "Wrong number of custom initital values {0!r}, should be something like {1!r}".format(
+                        parameters, p0
+                    )
+                )
         return p0
 
     def initial_values(self):
@@ -175,43 +198,59 @@ class FitFunc(object):
         # return [1.0, 2.0, 0.5]
         raise NotImplementedError("base class must be extended for each fit function")
 
-    def fit(self,x):
+    def fit(self, x):
         """Applies the fit to all *x* values"""
         fitfunc = self.f_factory()
-        return fitfunc(self.parameters,numpy.asarray(x))
+        return fitfunc(self.parameters, numpy.asarray(x))
+
 
 class FitExp(FitFunc):
     """y = f(x) = exp(-p[0]*x)"""
+
     def f_factory(self):
-        def fitfunc(p,x):
-            return numpy.exp(-p[0]*x)   # exp(-B*x)
+        def fitfunc(p, x):
+            return numpy.exp(-p[0] * x)  # exp(-B*x)
+
         return fitfunc
+
     def initial_values(self):
         return [1.0]
+
     def __repr__(self):
-        return "<FitExp "+str(self.parameters)+">"
+        return "<FitExp " + str(self.parameters) + ">"
+
 
 class FitExp2(FitFunc):
     """y = f(x) = p[0]*exp(-p[1]*x) + (1-p[0])*exp(-p[2]*x)"""
+
     def f_factory(self):
-        def fitfunc(p,x):
-            return p[0]*numpy.exp(-p[1]*x) + (1-p[0])*numpy.exp(-p[2]*x)
+        def fitfunc(p, x):
+            return p[0] * numpy.exp(-p[1] * x) + (1 - p[0]) * numpy.exp(-p[2] * x)
+
         return fitfunc
+
     def initial_values(self):
-        return [0.5,0.1,1e-4]
+        return [0.5, 0.1, 1e-4]
+
     def __repr__(self):
-        return "<FitExp2"+str(self.parameters)+">"
+        return "<FitExp2" + str(self.parameters) + ">"
+
 
 class FitLin(FitFunc):
     """y = f(x) = p[0]*x + p[1]"""
+
     def f_factory(self):
-        def fitfunc(p,x):
-            return p[0]*x + p[1]
+        def fitfunc(p, x):
+            return p[0] * x + p[1]
+
         return fitfunc
+
     def initial_values(self):
-        return [1.0,0.0]
+        return [1.0, 0.0]
+
     def __repr__(self):
-        return "<FitLin"+str(self.parameters)+">"
+        return "<FitLin" + str(self.parameters) + ">"
+
 
 class FitGauss(FitFunc):
     r"""y = f(x) = p[2] * 1/sqrt(2*pi*p[1]**2) * exp(-(x-p[0])**2/(2*p[1]**2))
@@ -222,11 +261,20 @@ class FitGauss(FitFunc):
     * p[1] == standard deviation $\sigma$
     * p[2] == scale $a$
     """
+
     def f_factory(self):
-        def fitfunc(p,x):
-            return p[2] * 1.0/(p[1]*numpy.sqrt(2*numpy.pi)) * numpy.exp(-(x-p[0])**2/(2*p[1]**2))
+        def fitfunc(p, x):
+            return (
+                p[2]
+                * 1.0
+                / (p[1] * numpy.sqrt(2 * numpy.pi))
+                * numpy.exp(-((x - p[0]) ** 2) / (2 * p[1] ** 2))
+            )
+
         return fitfunc
+
     def initial_values(self):
-        return [0.0,1.0,0.0]
+        return [0.0, 1.0, 0.0]
+
     def __repr__(self):
-        return "<FitGauss"+str(self.parameters)+">"
+        return "<FitGauss" + str(self.parameters) + ">"
