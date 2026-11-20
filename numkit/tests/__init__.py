@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # numkit test cases
 # Part of GromacsWrapper
 # Copyright (c) Oliver Beckstein <orbeckst@gmail.com>
@@ -53,4 +52,3 @@ especially as we are directly using this framework (imported from numpy).
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 """
-

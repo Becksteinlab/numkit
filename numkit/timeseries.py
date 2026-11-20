@@ -2,20 +2,24 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
-import numpy
-import scipy.signal
-import scipy.integrate
-import scipy.stats
-
+import logging
 import warnings
 
-import logging
+import numpy
+import scipy.integrate
+import scipy.signal
+import scipy.stats
+
 logger = logging.getLogger("numkit.timeseries")
+
+import itertools
 
 from numkit import LowAccuracyWarning
 
-def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
-                        normalize=False, **kwargs):
+
+def autocorrelation_fft(
+    series, remove_mean=True, paddingcorrection=True, normalize=False, **kwargs
+):
     """Calculate the auto correlation function.
 
        autocorrelation_fft(series,remove_mean=False,**kwargs) --> acf
@@ -60,28 +64,32 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
       *kwargs*
         other keyword arguments for :func:`scipy.signal.fftconvolve`
     """
-    kwargs.setdefault('mode','full')
+    kwargs.setdefault("mode", "full")
 
     if len(series.shape) > 2:
         # var/mean below would need proper axis arguments to deal with high dim
         raise TypeError("series must be a 1D array at the moment")
 
     if remove_mean:
-        series = numpy.squeeze(series.astype(float)).copy()   # must copy because de-meaning modifies it
+        series = numpy.squeeze(
+            series.astype(float)
+        ).copy()  # must copy because de-meaning modifies it
         mean = series.mean()
         series -= mean
     else:
-        series = numpy.squeeze(series.astype(float))          # can deal with a view
+        series = numpy.squeeze(series.astype(float))  # can deal with a view
 
-    ac = scipy.signal.fftconvolve(series,series[::-1,...],**kwargs)
+    ac = scipy.signal.fftconvolve(series, series[::-1, ...], **kwargs)
 
-    origin = int(ac.shape[0]/2)        # should work for both odd and even len(series)
-    ac = ac[origin:]              # only use second half of the symmetric acf
-    assert len(ac) <= len(series), "Oops: len(ac)={0:d}  len(series)={1:d}".format(len(ac), len(series))
-    if paddingcorrection and  not kwargs['mode'] == 'valid':     # 'valid' was not 0-padded
+    origin = int(ac.shape[0] / 2)  # should work for both odd and even len(series)
+    ac = ac[origin:]  # only use second half of the symmetric acf
+    assert len(ac) <= len(series), (
+        f"Oops: len(ac)={len(ac):d}  len(series)={len(series):d}"
+    )
+    if paddingcorrection and kwargs["mode"] != "valid":  # 'valid' was not 0-padded
         # correct for 0 padding
         # XXX: reference? Where did I get this from? (But it makes sense.)
-        ac *= len(series)/(len(series) - 1.0*numpy.arange(len(ac)))
+        ac *= len(series) / (len(series) - 1.0 * numpy.arange(len(ac)))
 
     norm = ac[0] or 1.0  # to guard against ACFs of zero arrays
     if not normalize:
@@ -93,10 +101,11 @@ def autocorrelation_fft(series, remove_mean=True, paddingcorrection=True,
             if remove_mean:
                 norm /= numpy.var(series)
             else:
-                norm /= numpy.mean(series*series)
+                norm /= numpy.mean(series * series)
         except ZeroDivisionError:
             norm = 1.0
-    return ac/norm
+    return ac / norm
+
 
 def tcorrel(x, y, nstep=100, debug=False):
     """Calculate the correlation time and an estimate of the error of the mean <y>.
@@ -137,8 +146,10 @@ def tcorrel(x, y, nstep=100, debug=False):
     _x = x[::nstep]  # do not run acf on all data: takes too long
     _y = y[::nstep]  # and does not improve accuracy
     if len(_y) < 500:  # 500 is a bit arbitrary
-        wmsg = "tcorrel(): Only %d datapoints for the chosen nstep=%d; " \
-            "ACF will possibly not be accurate." % (len(_y), nstep)
+        wmsg = (
+            f"tcorrel(): Only {len(_y):d} datapoints for the chosen nstep={nstep:d}; "
+            "ACF will possibly not be accurate."
+        )
         warnings.warn(wmsg, category=LowAccuracyWarning)
         logger.warning(wmsg)
 
@@ -146,22 +157,22 @@ def tcorrel(x, y, nstep=100, debug=False):
     try:
         i0 = numpy.where(acf <= 0)[0][0]  # first root of acf
     except IndexError:
-        i0 = -1   # use last value as best estimate
+        i0 = -1  # use last value as best estimate
     t0 = _x[i0]
     # integral of the _normalized_ acf
     norm = acf[0] or 1.0  # guard against a zero ACF
-    tc = scipy.integrate.simpson(acf[:i0]/norm, x=_x[:i0])
+    tc = scipy.integrate.simpson(acf[:i0] / norm, x=_x[:i0])
     # error estimate for the mean [Frenkel & Smit, p526]
-    sigma = numpy.sqrt(2*tc*acf[0]/(x[-1] - x[0]))
+    sigma = numpy.sqrt(2 * tc * acf[0] / (x[-1] - x[0]))
 
-    result = {'tc':tc, 't0':t0, 'sigma':sigma}
+    result = {"tc": tc, "t0": t0, "sigma": sigma}
     if debug:
-        result['t'] = _x[:i0]
-        result['acf'] = acf[:i0]
+        result["t"] = _x[:i0]
+        result["acf"] = acf[:i0]
     return result
 
 
-def smooth(x, window_len=11, window='flat'):
+def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
 
     This method is based on the convolution of a scaled window with the signal.
@@ -203,12 +214,13 @@ def smooth(x, window_len=11, window='flat'):
 
     Source: based on http://www.scipy.org/Cookbook/SignalSmooth
     """
-    windows = {'flat': lambda n: numpy.ones(n, dtype=float),
-               'hanning': numpy.hanning,
-               'hamming': numpy.hamming,
-               'bartlett': numpy.bartlett,
-               'blackman': numpy.blackman,
-               }
+    windows = {
+        "flat": lambda n: numpy.ones(n, dtype=float),
+        "hanning": numpy.hanning,
+        "hamming": numpy.hamming,
+        "bartlett": numpy.bartlett,
+        "blackman": numpy.blackman,
+    }
     window_len = int(window_len)
 
     if isinstance(window, numpy.ndarray):
@@ -218,7 +230,9 @@ def smooth(x, window_len=11, window='flat'):
         try:
             w = windows[window](window_len)
         except KeyError:
-            raise ValueError("Window {0!r} not supported; must be one of {1!r}".format(window, windows.keys()))
+            raise ValueError(
+                f"Window {window!r} not supported; must be one of {windows.keys()!r}"
+            )
 
     if x.ndim != 1:
         raise ValueError("smooth only accepts 1 dimension arrays.")
@@ -229,9 +243,10 @@ def smooth(x, window_len=11, window='flat'):
     if window_len < 3:
         return x
 
-    s = numpy.r_[x[window_len-1:0:-1], x, x[-1:-window_len:-1]]
-    y = numpy.convolve(w/w.sum(), s, mode='valid')
-    return y[(window_len-1)//2:-(window_len-1)//2]  # take off repeats on ends
+    s = numpy.r_[x[window_len - 1 : 0 : -1], x, x[-1:-window_len:-1]]
+    y = numpy.convolve(w / w.sum(), s, mode="valid")
+    return y[(window_len - 1) // 2 : -(window_len - 1) // 2]  # take off repeats on ends
+
 
 def smoothing_window_length(resolution, t):
     """Compute the length of a smooting window of *resolution* time units.
@@ -250,10 +265,11 @@ def smoothing_window_length(resolution, t):
     .. SeeAlso:: :func:`smooth`
     """
     dt = numpy.mean(numpy.diff(t))
-    N = int(resolution/dt)
+    N = int(resolution / dt)
     if N % 2 == 0:
         N += 1
     return N
+
 
 def mean_histogrammed_function(t, y, **kwargs):
     """Compute mean of data *y* in bins along *t*.
@@ -263,6 +279,7 @@ def mean_histogrammed_function(t, y, **kwargs):
     .. SeeAlso:: :func:`regularized_function` with *func* = :func:`numpy.mean`
     """
     return apply_histogrammed_function(numpy.mean, t, y, **kwargs)
+
 
 def std_histogrammed_function(t, y, **kwargs):
     """Compute standard deviation of data *y* in bins along *t*.
@@ -282,13 +299,17 @@ def rms_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
     """
-    def rms(a, demean=kwargs.pop('demean', False)):
+    demean = kwargs.pop("demean", False)
+
+    def rms(a, demean=demean):
         if len(a) == 0:
             return numpy.nan
         if demean:
             a -= numpy.mean(a)
-        return numpy.sqrt(numpy.mean(a*a))
+        return numpy.sqrt(numpy.mean(a * a))
+
     return apply_histogrammed_function(rms, t, y, **kwargs)
+
 
 def min_histogrammed_function(t, y, **kwargs):
     """Compute minimum of data *y* in bins along *t*.
@@ -297,11 +318,14 @@ def min_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = :func:`numpy.min`
     """
+
     def _min(a):
         if len(a) == 0:
             return numpy.nan
         return numpy.min(a)
+
     return apply_histogrammed_function(_min, t, y, **kwargs)
+
 
 def max_histogrammed_function(t, y, **kwargs):
     """Compute maximum of data *y* in bins along *t*.
@@ -310,11 +334,14 @@ def max_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = :func:`numpy.max`
     """
+
     def _max(a):
         if len(a) == 0:
             return numpy.nan
         return numpy.max(a)
+
     return apply_histogrammed_function(_max, t, y, **kwargs)
+
 
 def median_histogrammed_function(t, y, **kwargs):
     """Compute median of data *y* in bins along *t*.
@@ -324,6 +351,7 @@ def median_histogrammed_function(t, y, **kwargs):
     :func:`regularized_function` with *func* = :func:`numpy.median`
     """
     return apply_histogrammed_function(numpy.median, t, y, **kwargs)
+
 
 def percentile_histogrammed_function(t, y, **kwargs):
     """Compute the percentile *per* of data *y* in bins along *t*.
@@ -343,14 +371,25 @@ def percentile_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
     """
-    def percentile(a, per=kwargs.pop('per', 50.), limit=kwargs.pop('limit', ()),
-                   demean=kwargs.pop('demean', False), interpolation_method='fraction'):
+    per = kwargs.pop("per", 50.0)
+    limit = kwargs.pop("limit", ())
+    demean = kwargs.pop("demean", False)
+
+    def percentile(
+        a,
+        per=per,
+        limit=limit,
+        demean=demean,
+        interpolation_method="fraction",
+    ):
         if len(a) == 0:
             return numpy.nan
         if demean:
             a -= numpy.mean(a)
         return scipy.stats.scoreatpercentile(a, per, limit=limit)
+
     return apply_histogrammed_function(percentile, t, y, **kwargs)
+
 
 def tc_histogrammed_function(t, y, **kwargs):
     """Calculate the correlation time in each bin using :func:`tcorrel`.
@@ -358,13 +397,16 @@ def tc_histogrammed_function(t, y, **kwargs):
     .. Warning:: Not well tested and fragile.
     """
     dt = numpy.mean(numpy.diff(t))
+
     def get_tcorrel(a):
         if len(a) == 0:
             return numpy.nan
-        t = numpy.cumsum(dt*numpy.ones_like(a)) - dt
+        t = numpy.cumsum(dt * numpy.ones_like(a)) - dt
         results = tcorrel(t, a, nstep=1)
-        return results['tc']
+        return results["tc"]
+
     return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
+
 
 def error_histogrammed_function(t, y, **kwargs):
     """Calculate the error in each bin using :func:`tcorrel`.
@@ -372,13 +414,16 @@ def error_histogrammed_function(t, y, **kwargs):
     .. Warning:: Not well tested and fragile.
     """
     dt = numpy.mean(numpy.diff(t))
+
     def get_tcorrel(a):
         if len(a) == 0:
             return numpy.nan
-        t = numpy.cumsum(dt*numpy.ones_like(a)) - dt
+        t = numpy.cumsum(dt * numpy.ones_like(a)) - dt
         results = tcorrel(t, a, nstep=1)
-        return results['sigma']
+        return results["sigma"]
+
     return apply_histogrammed_function(get_tcorrel, t, y, **kwargs)
+
 
 def circmean_histogrammed_function(t, y, **kwargs):
     """Compute circular mean of data *y* in bins along *t*.
@@ -394,13 +439,16 @@ def circmean_histogrammed_function(t, y, **kwargs):
 
     .. Note:: Data are interpreted as angles in radians.
     """
-    low = kwargs.pop('low', -numpy.pi)
-    high = kwargs.pop('high', numpy.pi)
+    low = kwargs.pop("low", -numpy.pi)
+    high = kwargs.pop("high", numpy.pi)
+
     def _circmean(a, low=low, high=high):
         if len(a) == 0:
             return numpy.nan
         return scipy.stats.circmean(a, low=low, high=high)
+
     return apply_histogrammed_function(_circmean, t, y, **kwargs)
+
 
 def circstd_histogrammed_function(t, y, **kwargs):
     """Compute circular standard deviation of data *y* in bins along *t*.
@@ -416,13 +464,16 @@ def circstd_histogrammed_function(t, y, **kwargs):
 
     .. Note:: Data are interpreted as angles in radians.
     """
-    low = kwargs.pop('low', -numpy.pi)
-    high = kwargs.pop('high', numpy.pi)
+    low = kwargs.pop("low", -numpy.pi)
+    high = kwargs.pop("high", numpy.pi)
+
     def _circstd(a, low=low, high=high):
         if len(a) == 0:
             return numpy.nan
         return scipy.stats.circstd(a, low=low, high=high)
+
     return apply_histogrammed_function(_circstd, t, y, **kwargs)
+
 
 def apply_histogrammed_function(func, t, y, **kwargs):
     """Compute *func* of data *y* in bins along *t*.
@@ -438,7 +489,8 @@ def apply_histogrammed_function(func, t, y, **kwargs):
 
     """
     F, e = regularized_function(t, y, func, **kwargs)
-    return F, 0.5*(e[:-1] + e[1:])
+    return F, 0.5 * (e[:-1] + e[1:])
+
 
 def regularized_function(x, y, func, bins=100, range=None):
     """Compute *func()* over data aggregated in bins.
@@ -482,10 +534,10 @@ def regularized_function(x, y, func, bins=100, range=None):
         raise TypeError("Can only deal with 1D arrays.")
 
     # setup of bins (taken from numpy.histogram)
-    if (range is not None):
+    if range is not None:
         mn, mx = range
-        if (mn > mx):
-            raise AttributeError('max must be larger than min in range parameter.')
+        if mn > mx:
+            raise AttributeError("max must be larger than min in range parameter.")
 
     if not numpy.iterable(bins):
         if range is None:
@@ -494,19 +546,20 @@ def regularized_function(x, y, func, bins=100, range=None):
         if mn == mx:
             mn -= 0.5
             mx += 0.5
-        bins = numpy.linspace(mn, mx, bins+1, endpoint=True)
+        bins = numpy.linspace(mn, mx, bins + 1, endpoint=True)
     else:
         bins = numpy.asarray(bins)
         if (numpy.diff(bins) < 0).any():
-            raise ValueError('bins must increase monotonically.')
+            raise ValueError("bins must increase monotonically.")
 
     sorting_index = numpy.argsort(_x)
     sx = _x[sorting_index]
     sy = _y[sorting_index]
 
     # boundaries in SORTED data that demarcate bins; position in bin_index is the bin number
-    bin_index = numpy.r_[sx.searchsorted(bins[:-1], 'left'),
-                         sx.searchsorted(bins[-1], 'right')]
+    bin_index = numpy.r_[
+        sx.searchsorted(bins[:-1], "left"), sx.searchsorted(bins[-1], "right")
+    ]
 
     # naive implementation: apply operator to each chunk = sy[start:stop] separately
     #
@@ -514,6 +567,6 @@ def regularized_function(x, y, func, bins=100, range=None):
     # block = 65536 in numpy.histogram) because there does not seem to be a
     # general way to combine the chunks for different blocks, just think of
     # func=median
-    F = numpy.zeros(len(bins)-1)  # final function
-    F[:] = [func(sy[start:stop]) for start,stop in zip(bin_index[:-1],bin_index[1:])]
-    return F,bins
+    F = numpy.zeros(len(bins) - 1)  # final function
+    F[:] = [func(sy[start:stop]) for start, stop in itertools.pairwise(bin_index)]
+    return F, bins

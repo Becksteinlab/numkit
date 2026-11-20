@@ -1,0 +1,9 @@
+# Commits to ignore in git blame (e.g. bulk formatting / lint fixes).
+# Use with: git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub also picks this up for the blame UI.
+
+# fixed all ruff linter and formatter complaints
+2c96c560fa0abb2c84bf9d2d980d66485bdfc7f8
+17c946393cec395e825e2fb8fa7498456a9053fa
+47b902b85d07bc7472ae72dab3a966e541fd2891
+
