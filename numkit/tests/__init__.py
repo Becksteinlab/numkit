@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # numkit test cases
 # Part of GromacsWrapper
 # Copyright (c) Oliver Beckstein <orbeckst@gmail.com>

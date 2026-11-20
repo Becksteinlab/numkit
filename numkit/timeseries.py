@@ -2,14 +2,13 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
-import numpy
-import scipy.signal
-import scipy.integrate
-import scipy.stats
-
+import logging
 import warnings
 
-import logging
+import numpy
+import scipy.integrate
+import scipy.signal
+import scipy.stats
 
 logger = logging.getLogger("numkit.timeseries")
 
@@ -82,10 +81,8 @@ def autocorrelation_fft(
 
     origin = int(ac.shape[0] / 2)  # should work for both odd and even len(series)
     ac = ac[origin:]  # only use second half of the symmetric acf
-    assert len(ac) <= len(series), "Oops: len(ac)={0:d}  len(series)={1:d}".format(
-        len(ac), len(series)
-    )
-    if paddingcorrection and not kwargs["mode"] == "valid":  # 'valid' was not 0-padded
+    assert len(ac) <= len(series), f"Oops: len(ac)={len(ac):d}  len(series)={len(series):d}"
+    if paddingcorrection and kwargs["mode"] != "valid":  # 'valid' was not 0-padded
         # correct for 0 padding
         # XXX: reference? Where did I get this from? (But it makes sense.)
         ac *= len(series) / (len(series) - 1.0 * numpy.arange(len(ac)))
@@ -146,8 +143,8 @@ def tcorrel(x, y, nstep=100, debug=False):
     _y = y[::nstep]  # and does not improve accuracy
     if len(_y) < 500:  # 500 is a bit arbitrary
         wmsg = (
-            "tcorrel(): Only %d datapoints for the chosen nstep=%d; "
-            "ACF will possibly not be accurate." % (len(_y), nstep)
+            f"tcorrel(): Only {len(_y):d} datapoints for the chosen nstep={nstep:d}; "
+            "ACF will possibly not be accurate."
         )
         warnings.warn(wmsg, category=LowAccuracyWarning)
         logger.warning(wmsg)
@@ -230,9 +227,7 @@ def smooth(x, window_len=11, window="flat"):
             w = windows[window](window_len)
         except KeyError:
             raise ValueError(
-                "Window {0!r} not supported; must be one of {1!r}".format(
-                    window, windows.keys()
-                )
+                f"Window {window!r} not supported; must be one of {windows.keys()!r}"
             )
 
     if x.ndim != 1:
@@ -300,8 +295,9 @@ def rms_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with *func* = ``sqrt(mean(y*y))``
     """
+    demean = kwargs.pop("demean", False)
 
-    def rms(a, demean=kwargs.pop("demean", False)):
+    def rms(a, demean=demean):
         if len(a) == 0:
             return numpy.nan
         if demean:
@@ -371,12 +367,15 @@ def percentile_histogrammed_function(t, y, **kwargs):
 
     :func:`regularized_function` with :func:`scipy.stats.scoreatpercentile`
     """
+    per = kwargs.pop("per", 50.0)
+    limit = kwargs.pop("limit", ())
+    demean = kwargs.pop("demean", False)
 
     def percentile(
         a,
-        per=kwargs.pop("per", 50.0),
-        limit=kwargs.pop("limit", ()),
-        demean=kwargs.pop("demean", False),
+        per=per,
+        limit=limit,
+        demean=demean,
         interpolation_method="fraction",
     ):
         if len(a) == 0:

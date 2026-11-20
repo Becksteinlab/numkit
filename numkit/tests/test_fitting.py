@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # numkit.integration test cases
 # Part of GromacsWrapper
 # Copyright (c) Oliver Beckstein <orbeckst@gmail.com>
@@ -11,12 +10,11 @@
 
 """
 
-import numkit.fitting
-
 import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
-
 import pytest
+from numpy.testing import assert_allclose, assert_almost_equal
+
+import numkit.fitting
 
 
 @pytest.fixture(scope="module")
@@ -108,7 +106,7 @@ def FitLin(linear_data):
     return numkit.fitting.FitLin(X, Y, parameters=(1, 0))
 
 
-class TestFitLin(object):
+class TestFitLin:
     ref_x = np.linspace(-9.3, 5.7, 5)
     ref_y = np.array([149.4118475, 138.8792061, 128.3465646, 117.8139232, 107.2812817])
 
@@ -126,7 +124,7 @@ def FitExp(exp_decay_data):
     return numkit.fitting.FitExp(X, Y, parameters=(1.0,))
 
 
-class TestFitExp(object):
+class TestFitExp:
     ref_x = np.linspace(-5, 5, 5)
     ref_y = np.array(
         [1.0267685e05, 3.2043229e02, 1.0000000e00, 3.1207841e-03, 9.7392934e-06]

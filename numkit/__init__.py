@@ -32,7 +32,7 @@ The following modules are available and can be imported when needed:
 
 """
 
-__all__ = ["fitting", "timeseries", "integration", "observables"]
+__all__ = ["__version__", "fitting", "integration", "observables", "timeseries"]
 
 
 class LowAccuracyWarning(Warning):

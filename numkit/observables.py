@@ -1,7 +1,6 @@
 # numkit --- observables
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
-from __future__ import division
 
 import numpy
 
@@ -31,17 +30,17 @@ class QID(frozenset):
         if iterable is None:
             self = None  # super(QID,cls).__new__(cls)
         else:
-            self = super(QID, cls).__new__(cls, asiterable(iterable))
+            self = super().__new__(cls, asiterable(iterable))
         return self
 
     def union(self, x):
-        return super(QID, self).union(asiterable(x))  # hack...
+        return super().union(asiterable(x))  # hack...
 
     def __repr__(self):
-        return "QID({0!r})".format(list(self))
+        return f"QID({list(self)!r})"
 
 
-class QuantityWithError(object):
+class QuantityWithError:
     """Number with error and basic error propagation arithmetic.
 
     The quantity is assumed to be a mean of an observable
@@ -189,7 +188,7 @@ class QuantityWithError(object):
         return self.value, self.error
 
     def __repr__(self):
-        return "{0:g} ({1:g})".format(*self.astuple())
+        return "{:g} ({:g})".format(*self.astuple())
 
     # NOTE: all the special casing should really be done with the covariance
     # formulae. Also, check that a+a+a etc produces sensible output...
@@ -329,30 +328,22 @@ class QuantityWithError(object):
     def __abs__(self):
         return QuantityWithError(self.value.__abs__(), self.error, qid=self.qid)
 
-    # only python 2
-    def __cmp__(self, other):
-        """x.__cmp__(other) <==> cmp(x.value,other.value)"""
-        # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val, err, qid = self._astuple(other)
-        result = cmp(self.value, val)
-        return result
-
     def __eq__(self, other):
         """x.__eq__(other) <==> x.value == other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val, err, qid = self._astuple(other)
+        val, _err, _qid = self._astuple(other)
         return self.value == val
 
     def __lt__(self, other):
         """x.__lt__(other) <==> x.value < other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val, err, qid = self._astuple(other)
+        val, _err, _qid = self._astuple(other)
         return self.value < val
 
     def __le__(self, other):
         """x.__le__(other) <==> x.value <= other.value"""
         # TODO: make comparison error-aware, i.e. "==" for a given confidence interval
-        val, err, qid = self._astuple(other)
+        val, _err, _qid = self._astuple(other)
         return self.value <= val
 
     def __ge__(self, other):

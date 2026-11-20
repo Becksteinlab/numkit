@@ -2,8 +2,9 @@
 # Copyright (c) 2010 Oliver Beckstein <orbeckst@gmail.com>
 # Released under the "Modified BSD Licence" (see COPYING).
 
-import numpy
 import logging
+
+import numpy
 
 logger = logging.getLogger("numkit.fitting")
 
@@ -68,7 +69,7 @@ def linfit(x, y, dy=None):
     n = len(x)
     m = len(y)
     if n != m:
-        raise ValueError("lengths of x and y must match: {0!s} != {1!s}".format(n, m))
+        raise ValueError(f"lengths of x and y must match: {n!s} != {m!s}")
 
     try:
         have_dy = len(dy) > 0
@@ -86,8 +87,8 @@ def linfit(x, y, dy=None):
     S = numpy.add.reduce(1 / s2)
     Sx = numpy.add.reduce(x / s2)
     Sy = numpy.add.reduce(y / s2)
-    Sxx = numpy.add.reduce(x * x / s2)
-    Sxy = numpy.add.reduce(x * y / s2)
+    # Sxx = numpy.add.reduce(x * x / s2)
+    # Sxy = numpy.add.reduce(x * y / s2)
 
     t = (x - Sx / S) / dy
     Stt = numpy.add.reduce(t * t)
@@ -122,7 +123,7 @@ def linfit(x, y, dy=None):
     }
 
 
-class FitFunc(object):
+class FitFunc:
     """Fit a function f to data (x,y) using the method of least squares.
 
     The function is fitted when the object is created, using
@@ -187,9 +188,7 @@ class FitFunc(object):
                 p0[:] = parameters
             except ValueError:
                 raise ValueError(
-                    "Wrong number of custom initital values {0!r}, should be something like {1!r}".format(
-                        parameters, p0
-                    )
+                    f"Wrong number of custom initital values {parameters!r}, should be something like {p0!r}"
                 )
         return p0
 

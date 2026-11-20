@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # numkit.integration test cases
 # Part of GromacsWrapper
 # Copyright (c) Oliver Beckstein <orbeckst@gmail.com>
@@ -11,15 +10,14 @@
 
 """
 
-import pytest
-
 import numpy
-from numpy.testing import assert_equal, assert_almost_equal
+import pytest
+from numpy.testing import assert_almost_equal, assert_equal
 
 import numkit.integration
 
 
-class Test_simps_error(object):
+class Test_simps_error:
     # special case with constant spacing and constant error (=1.0) so
     # that one can easily calculate the correct errors
     @pytest.fixture
@@ -115,7 +113,7 @@ class Test_simps_error(object):
 
     def Xtest_h1h2(self):
         x = numpy.array([0, 1, 2, 4.0, 5])
-        y = 2 * x
+        # y = 2 * x
         dy = numpy.array([1.0, 1, 1, 1, 1])
 
         err = numkit.integration.simps_error(dy, x=x)
