@@ -34,7 +34,7 @@ https://github.com/Becksteinlab/numkit ::
 Python support
 ==============
 
-Python 3 support for releases 3.9 - 3.14 is tested on Linux, macOS,
+Python 3 support for releases 3.10 - 3.14 is tested on Linux, macOS,
 and Windows.
 
 (Python 2.7 and older version of Python 3 were supported up to release 1.2.3.)

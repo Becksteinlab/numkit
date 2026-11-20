@@ -12,7 +12,7 @@ Install with :program:`pip` from the `numkit PyPi repository`_ with ::
 
   pip install numkit
 
-Python 3.9 - 3.14 are supported.
+Python 3.10 - 3.14 are supported.
 
 .. _numkit PyPi repository: https://pypi.org/project/numkit/
 
