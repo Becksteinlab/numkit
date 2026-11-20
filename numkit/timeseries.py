@@ -12,6 +12,8 @@ import scipy.stats
 
 logger = logging.getLogger("numkit.timeseries")
 
+import itertools
+
 from numkit import LowAccuracyWarning
 
 
@@ -81,7 +83,9 @@ def autocorrelation_fft(
 
     origin = int(ac.shape[0] / 2)  # should work for both odd and even len(series)
     ac = ac[origin:]  # only use second half of the symmetric acf
-    assert len(ac) <= len(series), f"Oops: len(ac)={len(ac):d}  len(series)={len(series):d}"
+    assert len(ac) <= len(series), (
+        f"Oops: len(ac)={len(ac):d}  len(series)={len(series):d}"
+    )
     if paddingcorrection and kwargs["mode"] != "valid":  # 'valid' was not 0-padded
         # correct for 0 padding
         # XXX: reference? Where did I get this from? (But it makes sense.)
@@ -564,5 +568,5 @@ def regularized_function(x, y, func, bins=100, range=None):
     # general way to combine the chunks for different blocks, just think of
     # func=median
     F = numpy.zeros(len(bins) - 1)  # final function
-    F[:] = [func(sy[start:stop]) for start, stop in zip(bin_index[:-1], bin_index[1:])]
+    F[:] = [func(sy[start:stop]) for start, stop in itertools.pairwise(bin_index)]
     return F, bins

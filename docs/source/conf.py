@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # GromacsWrapper documentation build configuration file, created by
 # sphinx-quickstart on Tue Jun 23 19:38:56 2009.
@@ -11,13 +10,10 @@
 # All configuration values have a default value; values that are commented out
 # serve to show the default value.
 
-import sys
-import os
 import datetime
 
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
-
 
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
@@ -52,7 +48,7 @@ master_doc = "index"
 # General substitutions.
 project = "numkit"
 now = datetime.datetime.now()
-copyright = "2009-{}, The Authors of numkit (see AUTHORS)".format(now.year)
+copyright = f"2009-{now.year}, The Authors of numkit (see AUTHORS)"
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
